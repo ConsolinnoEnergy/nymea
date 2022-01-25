@@ -57,6 +57,7 @@
 #include "servers/webserver.h"
 #include "servers/bluetoothserver.h"
 #include "servers/mqttbroker.h"
+#include "servers/tunnelproxyserver.h"
 
 #include "network/zeroconf/zeroconfservicepublisher.h"
 
@@ -69,6 +70,7 @@ namespace nymeaserver {
 ServerManager::ServerManager(Platform *platform, NymeaConfiguration *configuration, const QStringList &additionalInterfaces, QObject *parent) :
     QObject(parent),
     m_platform(platform),
+    m_nymeaConfiguration(configuration),
     m_sslConfiguration(QSslConfiguration())
 {
     if (!QSslSocket::supportsSsl()) {
@@ -119,7 +121,7 @@ ServerManager::ServerManager(Platform *platform, NymeaConfiguration *configurati
         QUrl additionalInterface(interfaceString);
         ServerConfiguration config;
         config.id = "tmp-" + additionalInterface.host();
-        config.address = QHostAddress(additionalInterface.host());
+        config.address = additionalInterface.host();
         config.port = additionalInterface.port();
         TransportInterface *server = nullptr;
         QString serverType, serviceType;
@@ -165,6 +167,28 @@ ServerManager::ServerManager(Platform *platform, NymeaConfiguration *configurati
         m_bluetoothServer->startServer();
     }
 
+    foreach (const TunnelProxyServerConfiguration &config, configuration->tunnelProxyServerConfigurations()) {
+        TunnelProxyServer *tunnelProxyServer = new TunnelProxyServer(configuration->serverName(), configuration->serverUuid(), config, this);
+        qCDebug(dcServerManager()) << "Creating tunnel proxy server" << config;
+        m_tunnelProxyServers.insert(config.id, tunnelProxyServer);
+        connect(tunnelProxyServer, &TunnelProxyServer::runningChanged, this, [this, tunnelProxyServer](bool running){
+            if (running) {
+                // Note: enable authentication in any case, we don't want to expose unprotected access trough the internet
+                m_jsonServer->registerTransportInterface(tunnelProxyServer, true);
+            } else {
+                m_jsonServer->unregisterTransportInterface(tunnelProxyServer);
+            }
+        });
+
+        // FIXME: make use of SSL over tunnel proxy connections
+        // FIXME: make sure the authentication is enabled for the tunnel proxy
+
+        // Note: only start the tunnel proxy server if cloud is connected
+        if (configuration->cloudEnabled()) {
+            tunnelProxyServer->startServer();
+        }
+    }
+
     foreach (const WebServerConfiguration &config, configuration->webServerConfigurations()) {
         WebServer *webServer = new WebServer(config, m_sslConfiguration, this);
         m_webServers.insert(config.id, webServer);
@@ -191,6 +215,9 @@ ServerManager::ServerManager(Platform *platform, NymeaConfiguration *configurati
     connect(configuration, &NymeaConfiguration::mqttServerConfigurationRemoved, this, &ServerManager::mqttServerConfigurationRemoved);
     connect(configuration, &NymeaConfiguration::mqttPolicyChanged, this, &ServerManager::mqttPolicyChanged);
     connect(configuration, &NymeaConfiguration::mqttPolicyRemoved, this, &ServerManager::mqttPolicyRemoved);
+    connect(configuration, &NymeaConfiguration::tunnelProxyServerConfigurationChanged, this, &ServerManager::tunnelProxyServerConfigurationChanged);
+    connect(configuration, &NymeaConfiguration::tunnelProxyServerConfigurationRemoved, this, &ServerManager::tunnelProxyServerConfigurationRemoved);
+    connect(configuration, &NymeaConfiguration::cloudEnabledChanged, this, &ServerManager::cloudEnabledChanged);
 }
 
 /*! Returns the pointer to the created \l{JsonRPCServer} in this \l{ServerManager}. */
@@ -292,7 +319,7 @@ void ServerManager::webServerConfigurationChanged(const QString &id)
         server->stopServer();
         server->setConfiguration(config);
     } else {
-        qDebug(dcServerManager()) << "Received a Web Server config change event but don't have a Web Server instance for it. Creating new WebServer instance on" << config.address.toString() << config.port << "(SSL:" << config.sslEnabled << ")";
+        qDebug(dcServerManager()) << "Received a Web Server config change event but don't have a Web Server instance for it. Creating new WebServer instance on" << config.address << config.port << "(SSL:" << config.sslEnabled << ")";
         server = new WebServer(config, m_sslConfiguration, this);
         m_webServers.insert(config.id, server);
     }
@@ -341,6 +368,48 @@ void ServerManager::mqttPolicyRemoved(const QString &clientId)
     m_mqttBroker->removePolicy(clientId);
 }
 
+void ServerManager::tunnelProxyServerConfigurationChanged(const QString &id)
+{
+    TunnelProxyServer *server = m_tunnelProxyServers.value(id);
+    TunnelProxyServerConfiguration config = NymeaCore::instance()->configuration()->tunnelProxyServerConfigurations().value(id);
+    if (server) {
+        qDebug(dcServerManager()) << "Restarting tunnel proxy connection for" << config.address << config.port << "SSL" << (config.sslEnabled ? "enabled" : "disabled") << "Authentication" << (config.authenticationEnabled ? "enabled" : "disabled");
+        unregisterZeroConfService(id, "ws");
+        server->stopServer();
+        server->setConfiguration(config);
+    } else {
+        qDebug(dcServerManager()) << "Received a tunnel proxy config change event but don't have a WebSocket Server instance for it. Creating new instance.";
+        server = new TunnelProxyServer(m_nymeaConfiguration->serverName(), m_nymeaConfiguration->serverUuid(), config, this);
+        m_tunnelProxyServers.insert(server->configuration().id, server);
+    }
+    m_jsonServer->registerTransportInterface(server, config.authenticationEnabled);
+    server->startServer();
+}
+
+void ServerManager::tunnelProxyServerConfigurationRemoved(const QString &id)
+{
+    if (!m_tunnelProxyServers.contains(id)) {
+        qWarning(dcServerManager()) << "Received a tunnel proxy config removed event but don't have a tunnel proxy connection for it.";
+        return;
+    }
+    TunnelProxyServer *server = m_tunnelProxyServers.take(id);
+    m_jsonServer->unregisterTransportInterface(server);
+    server->stopServer();
+    server->deleteLater();
+}
+
+void ServerManager::cloudEnabledChanged(bool enabled)
+{
+    qCDebug(dcServerManager()) << "Cloud connection" << (enabled ? "enabled. Starting tunnel proxy servers" : "disabled. Stopping tunnel proxy servers.");
+    foreach (TunnelProxyServer *server, m_tunnelProxyServers) {
+        if (enabled) {
+            server->startServer();
+        } else {
+            server->stopServer();
+        }
+    }
+}
+
 bool ServerManager::registerZeroConfService(const ServerConfiguration &configuration, const QString &serverType, const QString &serviceType)
 {
     // Note: reversed order
@@ -352,7 +421,7 @@ bool ServerManager::registerZeroConfService(const ServerConfiguration &configura
     txt.insert("name", NymeaCore::instance()->configuration()->serverName());
     txt.insert("sslEnabled", configuration.sslEnabled ? "true" : "false");
     QString name = "nymea-" + serverType + "-" + configuration.id;
-    if (!m_platform->zeroConfController()->servicePublisher()->registerService(name, configuration.address, static_cast<quint16>(configuration.port), serviceType, txt)) {
+    if (!m_platform->zeroConfController()->servicePublisher()->registerService(name, QHostAddress(configuration.address), static_cast<quint16>(configuration.port), serviceType, txt)) {
         qCWarning(dcServerManager()) << "Could not register ZeroConf service for" << configuration;
         return false;
     }
