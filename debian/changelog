@@ -1,3 +1,18 @@
+nymea (0.30.1) xenial; urgency=medium
+
+  [ Michael Zanetti ]
+  * Add support fur user permissions
+
+  [ Simon Stürz ]
+  * Add tunnel proxy server for new remote connection mechanism
+
+  [ Michael Zanetti ]
+  * Fix a crash when removing a currently connected transport
+  * Make SSL certificate loading and generating more robust
+  * Fix encoding of ZigbeeHandler (Windows CRLF -> Unix LF)
+
+ -- Jenkins <jenkins@nymea.io>  Tue, 25 Jan 2022 15:26:16 +0100
+
 nymea (0.30.0) xenial; urgency=medium
 
   [ Michael Zanetti ]
