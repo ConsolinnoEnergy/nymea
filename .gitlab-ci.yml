@@ -1,0 +1,4 @@
+include:
+  - project: 'consolinno/iot-cloud-edge-embedded/edge/hems-ci'
+    file: '/nymea/development.yml'
+    ref: main # TODO klären
