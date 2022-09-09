@@ -6,4 +6,4 @@ include:
 variables:
   CUSTOM_BUILD_OPTIONS_BUSTER: "nodoc nocheck"
   CUSTOM_BUILD_OPTIONS_FOCAL: "nodoc"
-
+  ADDITIONAL_COMPILE_DEPENDENCIES: "libnymea-mqtt-dev" # TODO
