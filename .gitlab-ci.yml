@@ -2,8 +2,3 @@ include:
   - project: 'leafletfirmware/nymea/nymea-ci'
     file: '/nymea/development.yml'
     ref: main
-
-variables:
-  CUSTOM_BUILD_OPTIONS_BUSTER: "nodoc nocheck"
-  CUSTOM_BUILD_OPTIONS_FOCAL: "nodoc"
-  ADDITIONAL_COMPILE_DEPENDENCIES: "libnymea-mqtt-dev libnymea-networkmanager-dev libnymea-remoteproxyclient-dev libnymea-zigbee-dev libnymea-gpio"
