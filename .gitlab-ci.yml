@@ -1,4 +1,8 @@
 include:
-  - project: 'consolinno/iot-cloud-edge-embedded/edge/hems-ci'
-    file: '/nymea/development.yml'
-    ref: main # TODO klären
+  - project: 'leafletfirmware/nymea/nymea-ci'
+    file: '/nymea/pipeline.yml'
+    ref: main
+
+variables:
+  CUSTOM_BUILD_OPTIONS_BUSTER: "nodoc nocheck"
+  CUSTOM_BUILD_OPTIONS_FOCAL: "nodoc"
