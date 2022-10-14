@@ -1,4 +1,4 @@
-nymea (1.4.0-1) jammy; urgency=medium
+nymea (1.4.0-1) qa; urgency=medium
 
   [ Michael Zanetti ]
   * Make ThingClassId optional in AddThing() when there's already a
