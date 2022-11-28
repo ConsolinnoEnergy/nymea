@@ -537,7 +537,7 @@ RuleEngine::RuleError RuleEngine::enableRule(const RuleId &ruleId)
     emit ruleConfigurationChanged(rule);
 
     NymeaCore::instance()->logEngine()->logRuleEnabledChanged(rule, true);
-    qCDebug(dcRuleEngine()) << "Rule" << rule.name() << rule.id() << "enabled.";
+    qCDebug(dcRuleEngine()) << "Rule" << rule.name() << rule.id().toString() << "enabled.";
 
     return RuleErrorNoError;
 }
@@ -563,7 +563,7 @@ RuleEngine::RuleError RuleEngine::disableRule(const RuleId &ruleId)
     emit ruleConfigurationChanged(rule);
 
     NymeaCore::instance()->logEngine()->logRuleEnabledChanged(rule, false);
-    qCDebug(dcRuleEngine()) << "Rule" << rule.name() << rule.id() << "disabled.";
+    qCDebug(dcRuleEngine()) << "Rule" << rule.name() << rule.id().toString() << "disabled.";
     return RuleErrorNoError;
 }
 
@@ -596,7 +596,7 @@ RuleEngine::RuleError RuleEngine::executeActions(const RuleId &ruleId)
         }
     }
 
-    qCDebug(dcRuleEngine) << "Executing rule actions of rule" << rule.name() << rule.id();
+    qCDebug(dcRuleEngine) << "Executing rule actions of rule" << rule.name() << rule.id().toString();
     NymeaCore::instance()->logEngine()->logRuleActionsExecuted(rule);
     NymeaCore::instance()->executeRuleActions(rule.actions());
     return RuleErrorNoError;
@@ -628,7 +628,7 @@ RuleEngine::RuleError RuleEngine::executeExitActions(const RuleId &ruleId)
         return RuleErrorNoExitActions;
     }
 
-    qCDebug(dcRuleEngine) << "Executing rule exit actions of rule" << rule.name() << rule.id();
+    qCDebug(dcRuleEngine) << "Executing rule exit actions of rule" << rule.name() << rule.id().toString();
     NymeaCore::instance()->logEngine()->logRuleExitActionsExecuted(rule);
     NymeaCore::instance()->executeRuleActions(rule.exitActions());
     return RuleErrorNoError;
@@ -1005,7 +1005,7 @@ RuleEngine::RuleError RuleEngine::checkRuleAction(const RuleAction &ruleAction, 
 
         // Verify all required params are given
         foreach (const ParamType &paramType, actionType.paramTypes()) {
-            bool found = false;
+            bool found = !paramType.defaultValue().isNull();
             foreach (const RuleActionParam &ruleActionParam, ruleAction.ruleActionParams()) {
                 if (ruleActionParam.paramTypeId() == paramType.id()
                         || ruleActionParam.paramName() == paramType.name()) {
