@@ -1,4 +1,58 @@
-nymea (1.4.0-1) qa; urgency=medium
+nymea (1.5.1-1) jammy; urgency=medium
+
+  * Software unchanged: Bumping Debian revision for Consolinno HEMS v0.2.2   
+
+ -- Leonhard Heizinger <l.heizinger@consolinno.de>  Wed, 14 Dec 2022 10:43:41 +0100
+
+nymea (1.5.1) jammy; urgency=medium
+
+
+ -- jenkins <developer@nymea.io>  Mon, 07 Nov 2022 12:48:00 +0100
+
+nymea (1.5.0) jammy; urgency=medium
+
+  [ Michael Zanetti ]
+  * Fix a potential info->aborted() call after the plugin called info-
+    >finish()
+  * Expose Zigbee neighbor tables to jsonrpc
+  * Align gassensor interface wording
+  * Fix PyStdOutHandler class name in python engine
+  * Add API to interact with ZigBee bindings
+  * Add Thing and Things types to script engine
+
+  [ Simon Stürz ]
+  * Network device discovery: create reply for each discovery request
+
+  [ Michael Zanetti ]
+  * Fix editing user scopes
+
+  [ Simon Stürz ]
+  * Network device discovery: fix potential crash on unregister non
+    existing monitor
+  * Provide mock plugin with the test library, not with the tests.
+  * Remove extern plugin info from testlib header
+  * Improve warning information in thing manager
+
+  [ Michael Zanetti ]
+  * Add API to configure the wired network
+  * Rework air quliaty interfaces
+
+  [ Simon Stürz ]
+  * Allow to override default paths using new env variable
+  * Update mac address database
+
+ -- jenkins <developer@nymea.io>  Tue, 25 Oct 2022 02:37:19 +0200
+
+nymea (1.4.1) jammy; urgency=medium
+
+  [ Michael Zanetti ]
+  * Fix creating rules without giving action params that have a default
+    value
+  * Fix warning messages in debug report page
+
+ -- jenkins <developer@nymea.io>  Fri, 23 Sep 2022 16:33:50 +0200
+
+nymea (1.4.0) jammy; urgency=medium
 
   [ Michael Zanetti ]
   * Make ThingClassId optional in AddThing() when there's already a
