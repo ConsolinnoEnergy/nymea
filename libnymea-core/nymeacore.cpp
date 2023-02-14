@@ -135,7 +135,7 @@ void NymeaCore::init(const QStringList &additionalInterfaces) {
     m_logger->setThingManager(m_thingManager);
 
     qCDebug(dcCore()) << "Creating Script Engine";
-    m_scriptEngine = new ScriptEngine(m_thingManager, this);
+    m_scriptEngine = new scriptengine::ScriptEngine(m_thingManager, this);
     m_serverManager->jsonServer()->registerHandler(new ScriptsHandler(m_scriptEngine, m_scriptEngine));
 
     qCDebug(dcCore()) << "Creating Tags Storage";
@@ -704,7 +704,7 @@ void NymeaCore::evaluateRules(const Event &event)
     QList<RuleAction> eventBasedActions;
     foreach (const Rule &rule, m_ruleEngine->evaluateEvent(event)) {
         if (m_executingRules.contains(rule.id())) {
-            qCWarning(dcRuleEngine()) << "WARNING: Loop detected in rule execution for rule" << rule.id() << rule.name();
+            qCWarning(dcRuleEngine()) << "WARNING: Loop detected in rule execution for rule" << rule.id().toString() << rule.name();
             break;
         }
         m_executingRules.append(rule.id());
