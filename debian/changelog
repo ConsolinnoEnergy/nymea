@@ -1,3 +1,9 @@
+nymea (1.5.1-2) jammy; urgency=medium
+
+  * Software unchanged: Bumping Debian revision for Consolinno HEMS v0.3.0   
+
+ -- Leonhard Heizinger <l.heizinger@consolinno.de>  Wed, 27 Feb 2022 10:28:48 +0100
+
 nymea (1.5.1-1) jammy; urgency=medium
 
   * Software unchanged: Bumping Debian revision for Consolinno HEMS v0.2.2   
