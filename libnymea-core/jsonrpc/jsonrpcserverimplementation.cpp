@@ -58,7 +58,6 @@
 #include "loggingcategories.h"
 #include "platform/platform.h"
 #include "version.h"
-#include "cloud/cloudmanager.h"
 
 #include "integrationshandler.h"
 #include "ruleshandler.h"
@@ -91,7 +90,6 @@ JsonRPCServerImplementation::JsonRPCServerImplementation(const QSslConfiguration
     // Enums
     registerEnum<BasicType>();
     registerEnum<UserManager::UserError>();
-    registerEnum<CloudManager::CloudConnectionState>();
     registerFlag<Types::PermissionScope, Types::PermissionScopes>();
 
     // Objects
@@ -216,30 +214,6 @@ JsonRPCServerImplementation::JsonRPCServerImplementation(const QSslConfiguration
     registerMethod("RequestPushButtonAuth", description, params, returns, Types::PermissionScopeNone);
 
     params.clear(); returns.clear();
-    description = "Sets up the cloud connection by deploying a certificate and its configuration.";
-    params.insert("rootCA", enumValueName(String));
-    params.insert("certificatePEM", enumValueName(String));
-    params.insert("publicKey", enumValueName(String));
-    params.insert("privateKey", enumValueName(String));
-    params.insert("endpoint", enumValueName(String));
-    returns.insert("success", enumValueName(Bool));
-    registerMethod("SetupCloudConnection", description, params, returns);
-
-    params.clear(); returns.clear();
-    description = "Setup the remote connection by providing AWS token information. This requires the cloud to be connected.";
-    params.insert("idToken", enumValueName(String));
-    params.insert("userId", enumValueName(String));
-    returns.insert("status", enumValueName(Int));
-    returns.insert("message", enumValueName(String));
-    registerMethod("SetupRemoteAccess", description, params, returns);
-
-    params.clear(); returns.clear();
-    description = "Check whether the cloud is currently connected. \"connected\" will be true whenever connectionState equals CloudConnectionStateConnected and is deprecated. Please use the connectionState value instead.";
-    returns.insert("d:connected", enumValueName(Bool));
-    returns.insert("connectionState", enumRef<CloudManager::CloudConnectionState>());
-    registerMethod("IsCloudConnected", description, params, returns);
-
-    params.clear(); returns.clear();
     description = "This is basically a Ping/Pong mechanism a client app may use to check server connectivity. Currently, the server does not actually do anything with this information and will return the call providing the given sessionId back to the caller. It is up to the client whether to use this or not and not required by the server to keep the connection alive.";
     params.insert("sessionId", enumValueName(String));
     returns.insert("success", enumValueName(Bool));
@@ -247,12 +221,6 @@ JsonRPCServerImplementation::JsonRPCServerImplementation(const QSslConfiguration
     registerMethod("KeepAlive", description, params, returns, Types::PermissionScopeNone);
 
     // Notifications
-    params.clear(); returns.clear();
-    description = "Emitted whenever the cloud connection status changes.";
-    params.insert("connected", enumValueName(Bool));
-    params.insert("connectionState", enumRef<CloudManager::CloudConnectionState>());
-    registerNotification("CloudConnectedChanged", description, params);
-
     params.clear();
     description = "Emitted when a push button authentication reaches final state. NOTE: This notification is special. It will only be emitted to connections that did actively request a push button authentication, but also it will be emitted regardless of the notification settings. ";
     params.insert("success", enumValueName(Bool));
@@ -328,6 +296,8 @@ JsonReply *JsonRPCServerImplementation::Hello(const QVariantMap &params, const J
         handshake.insert("cacheHashes", cacheHashes);
     }
 
+    m_clientTokens[context.clientId()] = context.token();
+
     bool badToken = false;
     if (!context.token().isEmpty()) {
         TokenInfo tokenInfo = NymeaCore::instance()->userManager()->tokenInfo(context.token());
@@ -335,7 +305,7 @@ JsonReply *JsonRPCServerImplementation::Hello(const QVariantMap &params, const J
         badToken = tokenInfo.id().isNull();
         handshake.insert("authenticated", !badToken);
         handshake.insert("permissionScopes", Types::scopesToStringList(userInfo.scopes()));
-        handshake.insert("username", userInfo.username());        
+        handshake.insert("username", userInfo.username());
     }
 
     // If the connection is locked down already (because of a previous failed attempt) and authentication failed
@@ -444,6 +414,8 @@ JsonReply *JsonRPCServerImplementation::Authenticate(const QVariantMap &params, 
         m_connectionLockdownTimer.start();
     }
 
+    m_clientTokens[context.clientId()] = token;
+
     return createReply(ret);
 }
 
@@ -459,48 +431,6 @@ JsonReply *JsonRPCServerImplementation::RequestPushButtonAuth(const QVariantMap 
     data.insert("transactionId", transactionId);
     // TODO: return false if pushbutton auth is disabled in settings
     data.insert("success", true);
-    return createReply(data);
-}
-
-JsonReply *JsonRPCServerImplementation::SetupCloudConnection(const QVariantMap &params)
-{
-    if (NymeaCore::instance()->cloudManager()->connectionState() != CloudManager::CloudConnectionStateUnconfigured) {
-        qCDebug(dcCloud) << "Cloud already configured. Not changing configuration as it won't work anyways. If you want to reconfigure this instance to a different cloud, change the system UUID and wipe the cloud settings from the config.";
-        QVariantMap data;
-        data.insert("success", false);
-        return createReply(data);
-    }
-    QByteArray rootCA = params.value("rootCA").toByteArray();
-    QByteArray certificatePEM = params.value("certificatePEM").toByteArray();
-    QByteArray publicKey = params.value("publicKey").toByteArray();
-    QByteArray privateKey = params.value("privateKey").toByteArray();
-    QString endpoint = params.value("endpoint").toString();
-    bool status = NymeaCore::instance()->cloudManager()->installClientCertificates(rootCA, certificatePEM, publicKey, privateKey, endpoint);
-    QVariantMap ret;
-    ret.insert("success", status);
-    return createReply(ret);
-}
-
-JsonReply *JsonRPCServerImplementation::SetupRemoteAccess(const QVariantMap &params)
-{
-    QString idToken = params.value("idToken").toString();
-    QString userId = params.value("userId").toString();
-    NymeaCore::instance()->cloudManager()->pairDevice(idToken, userId);
-    JsonReply *reply = createAsyncReply("SetupRemoteAccess");
-    m_pairingRequests.insert(userId, reply);
-    connect(reply, &JsonReply::finished, [this, userId](){
-        m_pairingRequests.remove(userId);
-    });
-    return reply;
-}
-
-JsonReply *JsonRPCServerImplementation::IsCloudConnected(const QVariantMap &params)
-{
-    Q_UNUSED(params)
-    bool connected = NymeaCore::instance()->cloudManager()->connectionState() == CloudManager::CloudConnectionStateConnected;
-    QVariantMap data;
-    data.insert("connected", connected);
-    data.insert("connectionState", enumValueName<CloudManager::CloudConnectionState>(NymeaCore::instance()->cloudManager()->connectionState()));
     return createReply(data);
 }
 
@@ -599,7 +529,7 @@ void JsonRPCServerImplementation::setup()
 {
     registerHandler(this);
     registerHandler(new IntegrationsHandler(NymeaCore::instance()->thingManager(), this));
-    registerHandler(new RulesHandler(this));
+    registerHandler(new RulesHandler(NymeaCore::instance()->ruleEngine(), this));
     registerHandler(new LoggingHandler(this));
     registerHandler(new ConfigurationHandler(this));
     registerHandler(new NetworkManagerHandler(NymeaCore::instance()->networkManager(), this));
@@ -610,9 +540,6 @@ void JsonRPCServerImplementation::setup()
     registerHandler(new ZigbeeHandler(NymeaCore::instance()->zigbeeManager(), this));
     registerHandler(new ZWaveHandler(NymeaCore::instance()->zwaveManager(), this));
     registerHandler(new ModbusRtuHandler(NymeaCore::instance()->modbusRtuManager(), this));
-
-    connect(NymeaCore::instance()->cloudManager(), &CloudManager::pairingReply, this, &JsonRPCServerImplementation::pairingFinished);
-    connect(NymeaCore::instance()->cloudManager(), &CloudManager::connectionStateChanged, this, &JsonRPCServerImplementation::onCloudConnectionStateChanged);
 }
 
 void JsonRPCServerImplementation::processData(const QUuid &clientId, const QByteArray &data)
@@ -673,11 +600,24 @@ void JsonRPCServerImplementation::processJsonPacket(TransportInterface *interfac
     QString targetNamespace = commandList.first();
     QString method = commandList.last();
 
+    // We'll only allow setting a new token in the hello call. All other calls must match the token given in the hello
+    QByteArray token = m_clientTokens.value(clientId);
+    if (methodString == "JSONRPC.Hello") {
+        token = message.value("token").toByteArray();
+    } else if (message.value("token").toByteArray() != token) {
+        qCWarning(dcJsonRpc()) << "Client changed token without redoing the handshake.";
+        qCDebug(dcJsonRpc) << "Old token:" << token << "new token:" << message.value("token").toByteArray();
+        sendUnauthorizedResponse(interface, clientId, commandId, "Changing the user (token) requires a new handshake. Call JSONRPC.Hello.");
+        interface->terminateClientConnection(clientId);
+        qCWarning(dcJsonRpc()) << "Staring connection lockdown timer";
+        m_connectionLockdownTimer.start();
+        return;
+    }
+
     // check if authentication is required for this transport
-    if (interface->configuration().authenticationEnabled) {
-        QByteArray token = message.value("token").toByteArray();
-        QStringList authExemptMethodsNoUser = {"JSONRPC.Introspect", "JSONRPC.Hello", "JSONRPC.RequestPushButtonAuth", "JSONRPC.CreateUser"};
-        QStringList authExemptMethodsWithUser = {"JSONRPC.Introspect", "JSONRPC.Hello", "JSONRPC.Authenticate", "JSONRPC.RequestPushButtonAuth"};
+    if (interface->configuration().authenticationEnabled) {        
+        QStringList authExemptMethodsNoUser = {"JSONRPC.Hello", "JSONRPC.RequestPushButtonAuth", "JSONRPC.CreateUser"};
+        QStringList authExemptMethodsWithUser = {"JSONRPC.Hello", "JSONRPC.Authenticate", "JSONRPC.RequestPushButtonAuth"};
         // if there is no user in the system yet, let's fail unless this is a special method for authentication itself
         if (NymeaCore::instance()->userManager()->initRequired()) {
             if (!authExemptMethodsNoUser.contains(methodString) && (token.isEmpty() || !NymeaCore::instance()->userManager()->verifyToken(token))) {
@@ -754,7 +694,7 @@ void JsonRPCServerImplementation::processJsonPacket(TransportInterface *interfac
     }
 
     JsonContext callContext(clientId, m_clientLocales.value(clientId));
-    callContext.setToken(message.value("token").toByteArray());
+    callContext.setToken(token);
 
     qCDebug(dcJsonRpc()) << "Invoking method" << targetNamespace + '.' +  method << "from client" << clientId;
 
@@ -897,27 +837,6 @@ void JsonRPCServerImplementation::asyncReplyFinished()
     reply->deleteLater();
 }
 
-void JsonRPCServerImplementation::pairingFinished(QString cognitoUserId, int status, const QString &message)
-{
-    JsonReply *reply = m_pairingRequests.take(cognitoUserId);
-    if (!reply) {
-        return;
-    }
-    QVariantMap returns;
-    returns.insert("status", status);
-    returns.insert("message", message);
-    reply->setData(returns);
-    reply->finished();
-}
-
-void JsonRPCServerImplementation::onCloudConnectionStateChanged()
-{
-    QVariantMap params;
-    params.insert("connected", NymeaCore::instance()->cloudManager()->connectionState() == CloudManager::CloudConnectionStateConnected);
-    params.insert("connectionState", enumValueName<CloudManager::CloudConnectionState>(NymeaCore::instance()->cloudManager()->connectionState()));
-    emit CloudConnectedChanged(params);
-}
-
 void JsonRPCServerImplementation::onPushButtonAuthFinished(int transactionId, bool success, const QByteArray &token)
 {
     QUuid clientId = m_pushButtonTransactions.take(transactionId);
@@ -931,6 +850,7 @@ void JsonRPCServerImplementation::onPushButtonAuthFinished(int transactionId, bo
     params.insert("success", success);
     if (success) {
         params.insert("token", token);
+        m_clientTokens[clientId] = token;
     }
 
     emit PushButtonAuthFinished(clientId, params);
@@ -1079,6 +999,7 @@ void JsonRPCServerImplementation::clientDisconnected(const QUuid &clientId)
     m_clientNotifications.remove(clientId);
     m_clientBuffers.remove(clientId);
     m_clientLocales.remove(clientId);
+    m_clientTokens.remove(clientId);
     if (m_pushButtonTransactions.values().contains(clientId)) {
         NymeaCore::instance()->userManager()->cancelPushButtonAuth(m_pushButtonTransactions.key(clientId));
     }

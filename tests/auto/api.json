@@ -1,4 +1,4 @@
-6.2
+7.1
 {
     "enums": {
         "BasicType": [
@@ -25,12 +25,6 @@
             "BrowserIconDocument",
             "BrowserIconPackage",
             "BrowserIconFavorites"
-        ],
-        "CloudConnectionState": [
-            "CloudConnectionStateDisabled",
-            "CloudConnectionStateUnconfigured",
-            "CloudConnectionStateConnecting",
-            "CloudConnectionStateConnected"
         ],
         "ConfigurationError": [
             "ConfigurationErrorNoError",
@@ -174,10 +168,6 @@
             "PermissionScopeExecuteRules",
             "PermissionScopeConfigureRules",
             "PermissionScopeAdmin"
-        ],
-        "RemovePolicy": [
-            "RemovePolicyCascade",
-            "RemovePolicyUpdate"
         ],
         "RepeatingMode": [
             "RepeatingModeNone",
@@ -566,7 +556,7 @@
                 "key": "String",
                 "o:group": "String"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeControlThings",
             "returns": {
                 "value": "String"
             }
@@ -579,7 +569,7 @@
                 "o:group": "String",
                 "value": "String"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeConfigureThings",
             "returns": {
             }
         },
@@ -669,9 +659,6 @@
                     "serverName": "String",
                     "serverUuid": "Uuid"
                 },
-                "cloud": {
-                    "enabled": "Bool"
-                },
                 "tcpServerConfigurations": [
                     "$ref:ServerConfiguration"
                 ],
@@ -718,16 +705,6 @@
                 "timeZones": [
                     "String"
                 ]
-            }
-        },
-        "Configuration.SetCloudEnabled": {
-            "description": "Sets whether the cloud connection is enabled or disabled in the settings.",
-            "params": {
-                "enabled": "Bool"
-            },
-            "permissionScope": "PermissionScopeAdmin",
-            "returns": {
-                "configurationError": "$ref:ConfigurationError"
             }
         },
         "Configuration.SetDebugServerEnabled": {
@@ -1127,22 +1104,13 @@
             }
         },
         "Integrations.RemoveThing": {
-            "description": "Remove a thing from the system.",
+            "description": "Remove a thing and all its childs from the system. RemovePolicy is deprecated and has no effect any more.",
             "params": {
-                "o:removePolicy": "$ref:RemovePolicy",
-                "o:removePolicyList": [
-                    {
-                        "policy": "$ref:RemovePolicy",
-                        "ruleId": "Uuid"
-                    }
-                ],
+                "d:o:removePolicy": "String",
                 "thingId": "Uuid"
             },
             "permissionScope": "PermissionScopeConfigureThings",
             "returns": {
-                "o:ruleIds": [
-                    "Uuid"
-                ],
                 "thingError": "$ref:ThingError"
             }
         },
@@ -1271,16 +1239,6 @@
                 "types": "Object"
             }
         },
-        "JSONRPC.IsCloudConnected": {
-            "description": "Check whether the cloud is currently connected. \"connected\" will be true whenever connectionState equals CloudConnectionStateConnected and is deprecated. Please use the connectionState value instead.",
-            "params": {
-            },
-            "permissionScope": "PermissionScopeAdmin",
-            "returns": {
-                "connectionState": "$ref:CloudConnectionState",
-                "d:connected": "Bool"
-            }
-        },
         "JSONRPC.KeepAlive": {
             "description": "This is basically a Ping/Pong mechanism a client app may use to check server connectivity. Currently, the server does not actually do anything with this information and will return the call providing the given sessionId back to the caller. It is up to the client whether to use this or not and not required by the server to keep the connection alive.",
             "params": {
@@ -1313,32 +1271,6 @@
             "returns": {
                 "d:enabled": "Bool",
                 "namespaces": "StringList"
-            }
-        },
-        "JSONRPC.SetupCloudConnection": {
-            "description": "Sets up the cloud connection by deploying a certificate and its configuration.",
-            "params": {
-                "certificatePEM": "String",
-                "endpoint": "String",
-                "privateKey": "String",
-                "publicKey": "String",
-                "rootCA": "String"
-            },
-            "permissionScope": "PermissionScopeAdmin",
-            "returns": {
-                "success": "Bool"
-            }
-        },
-        "JSONRPC.SetupRemoteAccess": {
-            "description": "Setup the remote connection by providing AWS token information. This requires the cloud to be connected.",
-            "params": {
-                "idToken": "String",
-                "userId": "String"
-            },
-            "permissionScope": "PermissionScopeAdmin",
-            "returns": {
-                "message": "String",
-                "status": "Int"
             }
         },
         "JSONRPC.Version": {
@@ -1383,7 +1315,7 @@
                     "Variant"
                 ]
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeControlThings",
             "returns": {
                 "count": "Int",
                 "loggingError": "$ref:LoggingError",
@@ -1595,7 +1527,7 @@
                 "o:stateEvaluator": "$ref:StateEvaluator",
                 "o:timeDescriptor": "$ref:TimeDescriptor"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeConfigureRules",
             "returns": {
                 "o:ruleId": "Uuid",
                 "ruleError": "$ref:RuleError"
@@ -1606,7 +1538,7 @@
             "params": {
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeConfigureRules",
             "returns": {
                 "ruleError": "$ref:RuleError"
             }
@@ -1630,7 +1562,7 @@
                 "o:timeDescriptor": "$ref:TimeDescriptor",
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeConfigureRules",
             "returns": {
                 "o:rule": "$ref:Rule",
                 "ruleError": "$ref:RuleError"
@@ -1641,7 +1573,7 @@
             "params": {
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeConfigureRules",
             "returns": {
                 "ruleError": "$ref:RuleError"
             }
@@ -1651,7 +1583,7 @@
             "params": {
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeExecuteRules",
             "returns": {
                 "ruleError": "$ref:RuleError"
             }
@@ -1661,7 +1593,7 @@
             "params": {
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeExecuteRules",
             "returns": {
                 "ruleError": "$ref:RuleError"
             }
@@ -1671,7 +1603,7 @@
             "params": {
                 "thingId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeExecuteRules",
             "returns": {
                 "ruleIds": [
                     "Uuid"
@@ -1683,7 +1615,7 @@
             "params": {
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeExecuteRules",
             "returns": {
                 "o:rule": "$ref:Rule",
                 "ruleError": "$ref:RuleError"
@@ -1693,7 +1625,7 @@
             "description": "Get the descriptions of all configured rules. If you need more information about a specific rule use the method Rules.GetRuleDetails.",
             "params": {
             },
-            "permissionScope": "PermissionScopeConfigureRules",
+            "permissionScope": "PermissionScopeExecuteRules",
             "returns": {
                 "ruleDescriptions": [
                     "$ref:RuleDescription"
@@ -1705,7 +1637,7 @@
             "params": {
                 "ruleId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeConfigureRules",
             "returns": {
                 "ruleError": "$ref:RuleError"
             }
@@ -1935,7 +1867,7 @@
             "params": {
                 "tag": "$ref:Tag"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeControlThings",
             "returns": {
                 "tagError": "$ref:TagError"
             }
@@ -1948,7 +1880,7 @@
                 "o:tagId": "String",
                 "o:thingId": "Uuid"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeControlThings",
             "returns": {
                 "o:tags": "$ref:Tags",
                 "tagError": "$ref:TagError"
@@ -1959,7 +1891,7 @@
             "params": {
                 "tag": "$ref:Tag"
             },
-            "permissionScope": "PermissionScopeAdmin",
+            "permissionScope": "PermissionScopeControlThings",
             "returns": {
                 "tagError": "$ref:TagError"
             }
@@ -2352,14 +2284,6 @@
                 }
             }
         },
-        "Configuration.CloudConfigurationChanged": {
-            "description": "Emitted whenever the cloud configuration is changed.",
-            "params": {
-                "cloudConfiguration": {
-                    "enabled": "Bool"
-                }
-            }
-        },
         "Configuration.LanguageChanged": {
             "description": "Emitted whenever the language of the server changed. The Plugins, Vendors and ThingClasses have to be reloaded to get the translated data.",
             "params": {
@@ -2497,13 +2421,6 @@
                 "paramTypeId": "Uuid",
                 "thingId": "Uuid",
                 "value": "Variant"
-            }
-        },
-        "JSONRPC.CloudConnectedChanged": {
-            "description": "Emitted whenever the cloud connection status changes.",
-            "params": {
-                "connected": "Bool",
-                "connectionState": "$ref:CloudConnectionState"
             }
         },
         "JSONRPC.PushButtonAuthFinished": {

@@ -96,7 +96,7 @@ LogEngine::~LogEngine()
 {
     // Process the job queue before allowing to shut down
     while (m_currentJob) {
-        qCDebug(dcLogEngine()) << "Waiting for job to finish... (" << m_jobQueue.count() << "jobs left in queue)";
+        qCDebug(dcLogEngine()) << "Waiting for job to finish... (" << (m_priorityJobQueue.count() + m_jobQueue.count()) << "jobs left in queue)";
         m_jobWatcher.waitForFinished();
         // Make sure that the job queue is processes
         // We can't call processQueue ourselves because thread synchronisation is done via queued connections
@@ -104,14 +104,6 @@ LogEngine::~LogEngine()
     }
     qCDebug(dcLogEngine()) << "Closing Database";
     m_db.close();
-}
-
-void LogEngine::setThingManager(ThingManager *thingManager)
-{
-    m_thingManager = thingManager;
-    connect(thingManager, &ThingManager::eventTriggered, this, &LogEngine::logEvent);
-    connect(thingManager, &ThingManager::thingStateChanged, this, &LogEngine::logStateChange);
-    connect(thingManager, &ThingManager::actionExecuted, this, &LogEngine::logAction);
 }
 
 LogEntriesFetchJob *LogEngine::fetchLogEntries(const LogFilter &filter)
@@ -192,7 +184,7 @@ ThingsFetchJob *LogEngine::fetchThings()
 
 bool LogEngine::jobsRunning() const
 {
-    return !m_jobQueue.isEmpty() || m_currentJob;
+    return !m_jobQueue.isEmpty() || !m_priorityJobQueue.isEmpty() || m_currentJob;
 }
 
 void LogEngine::setMaxLogEntries(int maxLogEntries, int trimSize)
@@ -233,10 +225,6 @@ void LogEngine::logSystemEvent(const QDateTime &dateTime, bool active, Logging::
 
 void LogEngine::logEvent(const Event &event)
 {
-    if (!event.logged()) {
-        return;
-    }
-
     QVariantList valueList;
     foreach (const Param &param, event.params()) {
         valueList << param.value();
@@ -255,10 +243,6 @@ void LogEngine::logEvent(const Event &event)
 
 void LogEngine::logStateChange(Thing *thing, const StateTypeId &stateTypeId, const QVariant &value)
 {
-    if (!thing->loggedStateTypeIds().contains(stateTypeId)) {
-        return;
-    }
-
     LogEntry entry(Logging::LoggingSourceStates);
     entry.setTypeId(stateTypeId);
     entry.setThingId(thing->id());
@@ -491,11 +475,12 @@ void LogEngine::trim()
 void LogEngine::enqueJob(DatabaseJob *job, bool priority)
 {
     if (priority) {
-        m_jobQueue.prepend(job);
+        m_priorityJobQueue.append(job);
+        qCDebug(dcLogEngine()) << "Scheduled priority job at position" << (m_priorityJobQueue.count() - 1)  << "(" << m_priorityJobQueue.count() << "jobs in the queue)";
     } else {
         m_jobQueue.append(job);
+        qCDebug(dcLogEngine()) << "Scheduled job at position" << (m_jobQueue.count() - 1) << "(" << m_jobQueue.count() << "jobs in the queue)";
     }
-    qCDebug(dcLogEngine()) << "Scheduled job at position" << (priority ? 0 : m_jobQueue.count() - 1) << "(" << m_jobQueue.count() << "jobs in the queue)";
     processQueue();
 }
 
@@ -505,7 +490,7 @@ void LogEngine::processQueue()
         return;
     }
 
-    if (m_jobQueue.isEmpty()) {
+    if (m_priorityJobQueue.isEmpty() && m_jobQueue.isEmpty()) {
         emit jobsRunningChanged();
         return;
     }
@@ -525,8 +510,15 @@ void LogEngine::processQueue()
     }
 
 
-    DatabaseJob *job = m_jobQueue.takeFirst();
-    qCDebug(dcLogEngine()) << "Processing DB queue. (" << m_jobQueue.count() << "jobs left in queue," << m_entryCount << "entries in DB)";
+    DatabaseJob *job = nullptr;
+    if (!m_priorityJobQueue.isEmpty()) {
+        job = m_priorityJobQueue.takeFirst();
+        qCDebug(dcLogEngine()) << "Processing DB priority queue. (" << m_priorityJobQueue.count() << "jobs left in queue," << m_entryCount << "entries in DB)";
+    } else {
+        job = m_jobQueue.takeFirst();
+        qCDebug(dcLogEngine()) << "Processing DB queue. (" << m_jobQueue.count() << "jobs left in queue," << m_entryCount << "entries in DB)";
+    }
+
     m_currentJob = job;
 
     QFuture<DatabaseJob*> future = QtConcurrent::run([job](){
@@ -817,8 +809,17 @@ bool LogEngine::initDB(const QString &username, const QString &password)
             m_db.close();
             return false;
         }
+    }
 
-
+    m_db.exec("CREATE INDEX IF NOT EXISTS idx_query_single_thing ON entries (thingId);");
+    if (m_db.lastError().isValid()) {
+        qCWarning(dcLogEngine()) << "Error creating entries table thing index in log database. Driver error:" << m_db.lastError().driverText() << "Database error:" << m_db.lastError().databaseText();
+        return false;
+    }
+    m_db.exec("CREATE INDEX IF NOT EXISTS idx_query_single_type ON entries (typeId, thingId);");
+    if (m_db.lastError().isValid()) {
+        qCWarning(dcLogEngine()) << "Error creating entries table state index in log database. Driver error:" << m_db.lastError().driverText() << "Database error:" << m_db.lastError().databaseText();
+        return false;
     }
 
     qCDebug(dcLogEngine) << "Initialized logging DB successfully. (maximum DB size:" << m_dbMaxSize << ")";
