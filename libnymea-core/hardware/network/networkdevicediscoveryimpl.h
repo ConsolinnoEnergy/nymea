@@ -85,6 +85,12 @@ protected:
     void setEnabled(bool enabled) override;
 
 private:
+    typedef struct TargetNetwork {
+        QNetworkInterface networkInterface;
+        QNetworkAddressEntry addressEntry;
+        QHostAddress address;
+    } TargetNetwork;
+
     MacAddressDatabase *m_macAddressDatabase = nullptr;
     ArpSocket *m_arpSocket = nullptr;
     Ping *m_ping = nullptr;
@@ -101,8 +107,9 @@ private:
     uint m_monitorInterval = 60; // 1 min
     uint m_cacheCleanupPeriod = 30; // days
 
-    NetworkDeviceDiscoveryReplyImpl *m_currentReply = nullptr;
-    QList<NetworkDeviceDiscoveryReplyImpl *> m_pendingReplies;
+    NetworkDeviceDiscoveryReplyImpl *m_currentDiscoveryReply = nullptr;
+    QList<NetworkDeviceDiscoveryReplyImpl *> m_pendingDiscoveryReplies;
+    QList<MacAddressDatabaseReply *> m_runningMacDatabaseReplies;
     QList<PingReply *> m_runningPingReplies;
 
     QHash<MacAddress, NetworkDeviceMonitorImpl *> m_monitors;

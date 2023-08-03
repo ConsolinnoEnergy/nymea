@@ -87,6 +87,11 @@ void NymeaTestBase::initTestCase(const QString &loggingRules)
     qApp->processEvents();
     qCDebug(dcTests()) << "Nymea core instance initialized. Creating dummy user.";
 
+    foreach (const UserInfo &userInfo, NymeaCore::instance()->userManager()->users()) {
+        NymeaCore::instance()->userManager()->removeUser(userInfo.username());
+    }
+    NymeaCore::instance()->userManager()->removeUser("");
+
     // Yes, we're intentionally mixing upper/lower case email here... username should not be case sensitive
     NymeaCore::instance()->userManager()->removeUser("dummy");
     NymeaCore::instance()->userManager()->createUser("dummy", "DummyPW1!", "dummy@guh.io", "Dummy", Types::PermissionScopeAdmin);
@@ -128,13 +133,13 @@ void NymeaTestBase::cleanup()
     }
 }
 
-QVariant NymeaTestBase::injectAndWait(const QString &method, const QVariantMap &params, const QUuid &clientId)
+QVariant NymeaTestBase::injectAndWait(const QString &method, const QVariantMap &params, const QUuid &clientId, const QByteArray &tokenOverride)
 {
     QVariantMap call;
     call.insert("id", m_commandId);
     call.insert("method", method);
     call.insert("params", params);
-    call.insert("token", m_apiToken);
+    call.insert("token", tokenOverride == "default" ? m_apiToken : tokenOverride);
 
     QJsonDocument jsonDoc = QJsonDocument::fromVariant(call);
     QSignalSpy spy(m_mockTcpServer, SIGNAL(outgoingData(QUuid,QByteArray)));
@@ -220,7 +225,7 @@ QVariantList NymeaTestBase::checkNotifications(const QSignalSpy &spy, const QStr
 QVariant NymeaTestBase::getAndWait(const QNetworkRequest &request, const int &expectedStatus)
 {
     QNetworkAccessManager nam;
-    connect(&nam, &QNetworkAccessManager::sslErrors, [&nam](QNetworkReply *reply, const QList<QSslError> &) {
+    connect(&nam, &QNetworkAccessManager::sslErrors, [](QNetworkReply *reply, const QList<QSslError> &) {
         reply->ignoreSslErrors();
     });
     QSignalSpy clientSpy(&nam, SIGNAL(finished(QNetworkReply*)));
@@ -258,7 +263,7 @@ QVariant NymeaTestBase::getAndWait(const QNetworkRequest &request, const int &ex
 QVariant NymeaTestBase::deleteAndWait(const QNetworkRequest &request, const int &expectedStatus)
 {
     QNetworkAccessManager nam;
-    connect(&nam, &QNetworkAccessManager::sslErrors, [this, &nam](QNetworkReply *reply, const QList<QSslError> &) {
+    connect(&nam, &QNetworkAccessManager::sslErrors, [](QNetworkReply *reply, const QList<QSslError> &) {
         reply->ignoreSslErrors();
     });
     QSignalSpy clientSpy(&nam, SIGNAL(finished(QNetworkReply*)));
@@ -293,7 +298,7 @@ QVariant NymeaTestBase::deleteAndWait(const QNetworkRequest &request, const int 
 QVariant NymeaTestBase::postAndWait(const QNetworkRequest &request, const QVariant &params, const int &expectedStatus)
 {
     QNetworkAccessManager nam;
-    connect(&nam, &QNetworkAccessManager::sslErrors, [this, &nam](QNetworkReply *reply, const QList<QSslError> &) {
+    connect(&nam, &QNetworkAccessManager::sslErrors, [](QNetworkReply *reply, const QList<QSslError> &) {
         reply->ignoreSslErrors();
     });
     QSignalSpy clientSpy(&nam, SIGNAL(finished(QNetworkReply*)));
@@ -333,7 +338,7 @@ QVariant NymeaTestBase::postAndWait(const QNetworkRequest &request, const QVaria
 QVariant NymeaTestBase::putAndWait(const QNetworkRequest &request, const QVariant &params, const int &expectedStatus)
 {
     QNetworkAccessManager nam;
-    connect(&nam, &QNetworkAccessManager::sslErrors, [this, &nam](QNetworkReply *reply, const QList<QSslError> &) {
+    connect(&nam, &QNetworkAccessManager::sslErrors, [](QNetworkReply *reply, const QList<QSslError> &) {
         reply->ignoreSslErrors();
     });
     QSignalSpy clientSpy(&nam, SIGNAL(finished(QNetworkReply*)));
