@@ -1,4 +1,4 @@
-nymea (1.7.0) jammy; urgency=medium
+nymea (1.7.0-1) jammy; urgency=medium
 
   [ Michael Zanetti ]
   * Bind a client connection to the token given in the hello call.
