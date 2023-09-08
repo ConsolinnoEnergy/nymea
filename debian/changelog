@@ -1,4 +1,98 @@
-nymea (1.5.1-3) jammy; urgency=medium
+nymea (1.7.0-1) jammy; urgency=medium
+
+  [ Michael Zanetti ]
+  * Bind a client connection to the token given in the hello call.
+  * Improve debug logging filter arguments
+  * Add information for initialSetup and reconfigure to ThingSetupInfo
+  * Enable logging for thermostat states
+  * Properly clean up the TCP server on shutdown
+  * Enqueue priority jobs instead of prepending
+  * Require min/max values for co2sensors
+
+  [ Simon Stürz ]
+  * network device monitor: Clean up pending ping replies properly
+
+  [ Michael Zanetti ]
+  * Require min/max values for pressuresensors
+  * Use dynamic min/max values for io connections
+  * Refactor NymeaCore class
+
+  [ Simon Stürz ]
+  * Update copyright to 2023
+
+  [ Michael Zanetti ]
+  * Manually check for Bluetooth before instantiating QtBluetooth
+
+  [ Simon Stürz ]
+  * NetworkDeviceMonitor: Fix initial reachable state using internal
+    caches
+
+  [ Michael Zanetti ]
+  * Create indices on entries table of log db
+  * Stabilize logging tests
+
+  [ Simon Stürz ]
+  * Fix method to convert phases from string
+
+  [ Michael Zanetti ]
+  * Allow users with ControlThings permission to read things logs
+  * Drop cloud settings which aren't used any more
+
+  [ Simon Stürz ]
+  * Update MAC address database
+
+ -- jenkins <developer@nymea.io>  Tue, 21 Feb 2023 17:43:48 +0100
+
+nymea (1.6.3) jammy; urgency=medium
+
+
+ -- jenkins <developer@nymea.io>  Wed, 01 Feb 2023 12:17:51 +0100
+
+nymea (1.6.2) jammy; urgency=medium
+
+
+ -- jenkins <developer@nymea.io>  Mon, 16 Jan 2023 14:35:34 +0100
+
+nymea (1.6.1) jammy; urgency=medium
+
+
+ -- jenkins <developer@nymea.io>  Fri, 23 Dec 2022 11:32:14 +0100
+
+nymea (1.6.0) jammy; urgency=medium
+
+  [ Simon Stürz ]
+  * Update systemd service dependecies to dbus.socket
+
+  [ Michael Zanetti ]
+  * Add a childlock interface
+  * Fix suggestLogging property not working for eventTypes
+  * Allow registering list types without their contained objects on
+    JSONRPC
+  * Fix permissions for rules, tags and appdata api
+  * Make init call for python plugins blocking
+
+  [ Simon Stürz ]
+  * NetworkDeviceDiscovery: wait for pending MAC address manufacturer
+    lookups before finishing a discovery
+
+  [ Michael Zanetti ]
+  * Allow registering lists of ThingId on json rpc
+  * Fix a crash when the same plugin file is loaded twice
+
+  [ Simon Stürz ]
+  * NetworkDeviceDiscovery: Skip duplicated discovery if there are
+    multiple network interfaces connected to the same network
+
+  [ Michael Zanetti ]
+  * Drop old nymea:cloud support
+  * Add vibrationsensor interface
+
+  [ Simon Stürz ]
+  * Update mac address vendor database
+
+ -- jenkins <developer@nymea.io>  Tue, 13 Dec 2022 21:05:09 +0100
+
+nymea (1.5.1) jammy; urgency=medium
 
 
  -- jenkins <developer@nymea.io>  Mon, 07 Nov 2022 12:48:00 +0100

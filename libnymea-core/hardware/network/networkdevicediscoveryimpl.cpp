@@ -29,9 +29,10 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include "networkdevicediscoveryimpl.h"
-
 #include "nymeasettings.h"
 #include "loggingcategories.h"
+
+#include <math.h>
 
 #include <network/ping.h>
 #include <network/arpsocket.h>
@@ -64,7 +65,21 @@ NetworkDeviceDiscoveryImpl::NetworkDeviceDiscoveryImpl(QObject *parent) :
     m_discoveryTimer->setInterval(20000);
     m_discoveryTimer->setSingleShot(true);
     connect(m_discoveryTimer, &QTimer::timeout, this, [=](){
-        if (m_runningPingReplies.isEmpty() && m_currentReply) {
+        if (!m_runningPingReplies.isEmpty()) {
+            qCDebug(dcNetworkDeviceDiscovery()) << "Discovery timeout occurred. There are still" << m_runningPingReplies.count()  << "ping replies pending and" << m_ping->queueCount() << "addresses int the ping queue. Aborting them...";
+            foreach (PingReply *reply, m_runningPingReplies) {
+                reply->abort();
+            }
+        }
+
+        // We still wait for any mac manufacturer lookups, since we got already a mac...
+        if (!m_runningMacDatabaseReplies.isEmpty()) {
+            qCDebug(dcNetworkDeviceDiscovery()) << "Discovery timeout occurred but there are still" << m_runningMacDatabaseReplies.count() << "mac database replies pending. Waiting for them to finish...";
+            return;
+        }
+
+        if (m_currentDiscoveryReply) {
+            qCDebug(dcNetworkDeviceDiscovery()) << "Discovery timeout occurred and all pending replies have finished.";
             finishDiscovery();
         }
     });
@@ -103,27 +118,27 @@ NetworkDeviceDiscoveryReply *NetworkDeviceDiscoveryImpl::discover()
     // reply and owns the object, even if the discovery has been finished.
 
     // Create the internal object if required
-    bool alreadyRunning = (m_currentReply != nullptr);
+    bool alreadyRunning = (m_currentDiscoveryReply != nullptr);
     if (alreadyRunning) {
-        if (m_currentReply->isFinished()) {
+        if (m_currentDiscoveryReply->isFinished()) {
             qCDebug(dcNetworkDeviceDiscovery()) << "Discovery internally already running and finished.";
         } else {
             qCDebug(dcNetworkDeviceDiscovery()) << "Discovery internally already running. Re-using the current running discovery reply.";
         }
     } else {
         qCDebug(dcNetworkDeviceDiscovery()) << "Starting internally a new discovery.";
-        m_currentReply = new NetworkDeviceDiscoveryReplyImpl(this);
-        connect(m_currentReply, &NetworkDeviceDiscoveryReplyImpl::networkDeviceInfoAdded, this, &NetworkDeviceDiscoveryImpl::updateCache);
-        connect(m_currentReply, &NetworkDeviceDiscoveryReplyImpl::finished, this, [this](){
+        m_currentDiscoveryReply = new NetworkDeviceDiscoveryReplyImpl(this);
+        connect(m_currentDiscoveryReply, &NetworkDeviceDiscoveryReplyImpl::networkDeviceInfoAdded, this, &NetworkDeviceDiscoveryImpl::updateCache);
+        connect(m_currentDiscoveryReply, &NetworkDeviceDiscoveryReplyImpl::finished, this, [this](){
             // Finish all pending replies
-            foreach (NetworkDeviceDiscoveryReplyImpl *reply, m_pendingReplies) {
+            foreach (NetworkDeviceDiscoveryReplyImpl *reply, m_pendingDiscoveryReplies) {
 
                 // Sync all network device infos with all pending replies
-                foreach (const NetworkDeviceInfo &info, m_currentReply->networkDeviceInfos()) {
+                foreach (const NetworkDeviceInfo &info, m_currentDiscoveryReply->networkDeviceInfos()) {
                     reply->addCompleteNetworkDeviceInfo(info);
                 }
 
-                foreach (const NetworkDeviceInfo &info, m_currentReply->virtualNetworkDeviceInfos()) {
+                foreach (const NetworkDeviceInfo &info, m_currentDiscoveryReply->virtualNetworkDeviceInfos()) {
                     reply->addVirtualNetworkDeviceInfo(info);
                 }
             }
@@ -131,11 +146,11 @@ NetworkDeviceDiscoveryReply *NetworkDeviceDiscoveryImpl::discover()
             // Delete the current reply before finishing the pending replies.
             // Just in case some one restarts a discovery on finished, a new internal
             // object should be created
-            m_currentReply->deleteLater();
-            m_currentReply = nullptr;
+            m_currentDiscoveryReply->deleteLater();
+            m_currentDiscoveryReply = nullptr;
 
-            foreach (NetworkDeviceDiscoveryReplyImpl *reply, m_pendingReplies) {
-                m_pendingReplies.removeAll(reply);
+            foreach (NetworkDeviceDiscoveryReplyImpl *reply, m_pendingDiscoveryReplies) {
+                m_pendingDiscoveryReplies.removeAll(reply);
                 reply->setFinished(true);
                 emit reply->finished();
             }
@@ -144,9 +159,9 @@ NetworkDeviceDiscoveryReply *NetworkDeviceDiscoveryImpl::discover()
 
     // Create the reply for the user
     NetworkDeviceDiscoveryReplyImpl *reply = new NetworkDeviceDiscoveryReplyImpl(this);
-    connect(m_currentReply, &NetworkDeviceDiscoveryReplyImpl::networkDeviceInfoAdded, reply, &NetworkDeviceDiscoveryReplyImpl::addCompleteNetworkDeviceInfo);
-    connect(m_currentReply, &NetworkDeviceDiscoveryReplyImpl::hostAddressDiscovered, reply, &NetworkDeviceDiscoveryReplyImpl::hostAddressDiscovered);
-    m_pendingReplies.append(reply);
+    connect(m_currentDiscoveryReply, &NetworkDeviceDiscoveryReplyImpl::networkDeviceInfoAdded, reply, &NetworkDeviceDiscoveryReplyImpl::addCompleteNetworkDeviceInfo);
+    connect(m_currentDiscoveryReply, &NetworkDeviceDiscoveryReplyImpl::hostAddressDiscovered, reply, &NetworkDeviceDiscoveryReplyImpl::hostAddressDiscovered);
+    m_pendingDiscoveryReplies.append(reply);
 
     if (!available()) {
         qCWarning(dcNetworkDeviceDiscovery()) << "The network discovery is not available. Please make sure the binary has the required capability (CAP_NET_RAW) or start the application as root.";
@@ -159,10 +174,10 @@ NetworkDeviceDiscoveryReply *NetworkDeviceDiscoveryImpl::discover()
         // Add already discovered network device infos in the next event loop
         // so any connections after this method call will work as expected
         QTimer::singleShot(0, reply, [this, reply](){
-            if (!m_currentReply)
+            if (!m_currentDiscoveryReply)
                 return;
 
-            foreach (const NetworkDeviceInfo &networkDeviceInfo, m_currentReply->networkDeviceInfos()) {
+            foreach (const NetworkDeviceInfo &networkDeviceInfo, m_currentDiscoveryReply->networkDeviceInfos()) {
                 reply->addCompleteNetworkDeviceInfo(networkDeviceInfo);
             }
         });
@@ -226,6 +241,7 @@ NetworkDeviceMonitor *NetworkDeviceDiscoveryImpl::registerMonitor(const MacAddre
 
     NetworkDeviceMonitorImpl *monitor = new NetworkDeviceMonitorImpl(macAddress, this);
     monitor->setNetworkDeviceInfo(info);
+    monitor->setLastSeen(m_lastSeen.value(macAddress, QDateTime()));
     m_monitors.insert(macAddress, monitor);
     m_monitorsReferenceCount[macAddress] = 1;
 
@@ -241,10 +257,11 @@ NetworkDeviceMonitor *NetworkDeviceDiscoveryImpl::registerMonitor(const MacAddre
         qCDebug(dcNetworkDeviceDiscovery()) << "Adding network device monitor for unresolved mac address. Starting a discovery...";
         NetworkDeviceDiscoveryReply *reply = discover();
         connect(reply, &NetworkDeviceDiscoveryReply::finished, reply, &NetworkDeviceDiscoveryReply::deleteLater);
+    } else {
+        evaluateMonitor(monitor);
     }
 
-    evaluateMonitor(monitor);
-
+    qCDebug(dcNetworkDeviceDiscovery()) << "Registered successfully" << monitor;
     return monitor;
 }
 
@@ -325,6 +342,9 @@ void NetworkDeviceDiscoveryImpl::setEnabled(bool enabled)
 
 void NetworkDeviceDiscoveryImpl::pingAllNetworkDevices()
 {
+    QList<QHostAddress> ownAddresses;
+    QList<TargetNetwork> targetNetworks;
+
     qCDebug(dcNetworkDeviceDiscovery()) << "Starting ping for all network devices...";
     foreach (const QNetworkInterface &networkInterface, QNetworkInterface::allInterfaces()) {
         if (networkInterface.flags().testFlag(QNetworkInterface::IsLoopBack))
@@ -338,51 +358,88 @@ void NetworkDeviceDiscoveryImpl::pingAllNetworkDevices()
 
         qCDebug(dcNetworkDeviceDiscovery()) << "Verifying network interface" << networkInterface.name() << networkInterface.hardwareAddress() << "...";
         foreach (const QNetworkAddressEntry &entry, networkInterface.addressEntries()) {
-            qCDebug(dcNetworkDeviceDiscovery()) << "  Checking entry" << entry.ip().toString();
 
             // Only IPv4
             if (entry.ip().protocol() != QAbstractSocket::IPv4Protocol)
                 continue;
 
+            // Store the own address of this network interface in any case,
+            // since we don't want to ping our self
+            ownAddresses.append(entry.ip());
+
+            TargetNetwork targetNetwork;
+            targetNetwork.networkInterface = networkInterface;
+            targetNetwork.addressEntry = entry;
+            targetNetwork.address = QHostAddress(entry.ip().toIPv4Address() & entry.netmask().toIPv4Address());
+
+            qCDebug(dcNetworkDeviceDiscovery()) << "  Checking entry" << entry.ip().toString();
             qCDebug(dcNetworkDeviceDiscovery()) << "    Host address:" << entry.ip().toString();
+            qCDebug(dcNetworkDeviceDiscovery()) << "    Network address:" << targetNetwork.address.toString();
             qCDebug(dcNetworkDeviceDiscovery()) << "    Broadcast address:" << entry.broadcast().toString();
             qCDebug(dcNetworkDeviceDiscovery()) << "    Netmask:" << entry.netmask().toString();
-            quint32 addressRangeStart = entry.ip().toIPv4Address() & entry.netmask().toIPv4Address();
-            quint32 addressRangeStop = entry.broadcast().toIPv4Address() | addressRangeStart;
-            quint32 range = addressRangeStop - addressRangeStart;
+            qCDebug(dcNetworkDeviceDiscovery()) << "    Address rang from" << targetNetwork.address.toString() << "-->" << targetNetwork.addressEntry.broadcast().toString();
 
             // Let's scan only 255.255.255.0 networks for now
-            if (range > 255)
+            if (entry.prefixLength() < 24) {
+                qCDebug(dcNetworkDeviceDiscovery()) << "Skipping network interface" << networkInterface.name() << "because there are to many hosts to contact. The network detector was designed for /24 networks.";
+                continue;
+            }
+
+            // Filter out duplicated networks (for example connected using wifi and ethernet to the same network) ...
+
+            bool duplicatedNetwork = false;
+            foreach (const TargetNetwork &tn, targetNetworks) {
+                if (tn.address == targetNetwork.address && tn.addressEntry.netmask() == targetNetwork.addressEntry.netmask()) {
+                    qCDebug(dcNetworkDeviceDiscovery()) << "Skipping network interface" << targetNetwork.networkInterface.name() << targetNetwork.address.toString() << "as ping target network because it seems to be the same network as" << tn.networkInterface.name() << tn.address.toString();
+                    duplicatedNetwork = true;
+                    break;
+                }
+            }
+
+            if (duplicatedNetwork)
                 continue;
 
-            qCDebug(dcNetworkDeviceDiscovery()) << "    Address range" << range << " | from" << QHostAddress(addressRangeStart).toString() << "-->" << QHostAddress(addressRangeStop).toString();
-            // Send ping request to each address within the range
-            for (quint32 i = 1; i < range; i++) {
-                quint32 address = addressRangeStart + i;
-                QHostAddress targetAddress(address);
+            targetNetworks.append(targetNetwork);
+        }
+    }
 
-                // Skip our self
-                if (targetAddress == entry.ip())
-                    continue;
+    foreach (const TargetNetwork &targetNetwork, targetNetworks) {
 
-                // Retry only once to ping a device and lookup the hostname on success
-                PingReply *reply = ping(targetAddress, true, 1);
-                m_runningPingReplies.append(reply);
-                connect(reply, &PingReply::finished, this, [=](){
-                    m_runningPingReplies.removeAll(reply);
-                    if (reply->error() == PingReply::ErrorNoError) {
-                        qCDebug(dcNetworkDeviceDiscovery()) << "Ping response from" << targetAddress.toString() << reply->hostName() << reply->duration() << "ms";
-                        if (m_currentReply) {
-                            m_currentReply->processPingResponse(targetAddress, reply->hostName());
-                        }
+        // Send ping request to each address within the range
+        quint32 targetHostsCount = pow(2, 32 - targetNetwork.addressEntry.prefixLength()) - 1;
+        for (quint32 i = 1; i < targetHostsCount; i++) {
+            QHostAddress targetAddress(targetNetwork.address.toIPv4Address() + i);
+
+            // Skip the broadcast
+            if (targetAddress == targetNetwork.addressEntry.broadcast())
+                continue;
+
+            // Skip our self
+            if (ownAddresses.contains(targetAddress))
+                continue;
+
+            // Retry only once to ping a device and lookup the hostname on success
+            PingReply *reply = ping(targetAddress, true, 1);
+            m_runningPingReplies.append(reply);
+            connect(reply, &PingReply::finished, this, [=](){
+                m_runningPingReplies.removeAll(reply);
+                if (reply->error() == PingReply::ErrorNoError) {
+                    qCDebug(dcNetworkDeviceDiscovery()) << "Ping response from" << targetAddress.toString() << reply->hostName() << reply->duration() << "ms";
+                    if (m_currentDiscoveryReply) {
+                        m_currentDiscoveryReply->processPingResponse(targetAddress, reply->hostName());
                     }
+                }
 
-                    if (m_runningPingReplies.isEmpty() && m_currentReply && !m_discoveryTimer->isActive()) {
-                        qCWarning(dcNetworkDeviceDiscovery()) << "All ping replies finished for discovery." << m_currentReply->networkDeviceInfos().count();
-                        finishDiscovery();
-                    }
-                });
-            }
+                if (m_runningPingReplies.isEmpty() && !m_runningMacDatabaseReplies.isEmpty()) {
+                    qCDebug(dcNetworkDeviceDiscovery()) << "All ping replies have finished but there are still" << m_runningMacDatabaseReplies.count() << "mac db lookups pending. Waiting for them to finish...";
+                    return;
+                }
+
+                if (m_runningPingReplies.isEmpty() && m_runningMacDatabaseReplies.isEmpty() && m_currentDiscoveryReply && !m_discoveryTimer->isActive()) {
+                    qCDebug(dcNetworkDeviceDiscovery()) << "All pending replies have finished.";
+                    finishDiscovery();
+                }
+            });
         }
     }
 }
@@ -525,7 +582,7 @@ void NetworkDeviceDiscoveryImpl::updateCache(const NetworkDeviceInfo &deviceInfo
 
 void NetworkDeviceDiscoveryImpl::evaluateMonitor(NetworkDeviceMonitorImpl *monitor)
 {
-    if (monitor->networkDeviceInfo().address().isNull())
+    if (!monitor->networkDeviceInfo().isValid())
         return;
 
     if (monitor->currentPingReply())
@@ -545,6 +602,12 @@ void NetworkDeviceDiscoveryImpl::evaluateMonitor(NetworkDeviceMonitorImpl *monit
         requiresRefresh = true;
     }
 
+    if (!requiresRefresh && currentDateTime <= monitor->lastSeen().addSecs(m_monitorInterval)) {
+        // We have seen this device within the last minute, make sure the monitor is reachable
+        monitor->setReachable(true);
+        return;
+    }
+
     if (!requiresRefresh)
         return;
 
@@ -560,8 +623,11 @@ void NetworkDeviceDiscoveryImpl::evaluateMonitor(NetworkDeviceMonitorImpl *monit
         monitor->setLastConnectionAttempt(QDateTime::currentDateTime());
     });
 
-    connect(reply, &PingReply::finished, monitor, [=](){
+    connect(reply, &PingReply::destroyed, monitor, [=](){
         monitor->setCurrentPingReply(nullptr);
+    });
+
+    connect(reply, &PingReply::finished, monitor, [=](){
         processMonitorPingResult(reply, monitor);
     });
 }
@@ -592,39 +658,51 @@ void NetworkDeviceDiscoveryImpl::processArpTraffic(const QNetworkInterface &inte
         }
     }
 
-    // Check if we have a reply running
-    if (m_currentReply) {
+    // Check if we have currently  reply running
+    if (!m_currentDiscoveryReply)
+        return;
 
-        // First process the response
-        m_currentReply->processArpResponse(interface, address, macAddress);
+    // First process the response
+    m_currentDiscoveryReply->processArpResponse(interface, address, macAddress);
 
-        // Check if we know the mac address manufacturer from the cache
-        bool requiresMacAddressLookup = true;
-        if (m_networkInfoCache.contains(macAddress)) {
-            QString cachedManufacturer = m_networkInfoCache[macAddress].macAddressManufacturer();
-            if (!cachedManufacturer.isEmpty()) {
-                // Found the mac address manufacturer in the cache, let's use that one...
-                m_currentReply->processMacManufacturer(macAddress, cachedManufacturer);
-                requiresMacAddressLookup = false;
-            }
+    // Check if we know the mac address manufacturer from the cache
+    bool requiresMacAddressLookup = true;
+    if (m_networkInfoCache.contains(macAddress)) {
+        QString cachedManufacturer = m_networkInfoCache[macAddress].macAddressManufacturer();
+        if (!cachedManufacturer.isEmpty()) {
+            // Found the mac address manufacturer in the cache, let's use that one...
+            qCDebug(dcNetworkDeviceDiscovery()) << "Using cached manufacturer " << cachedManufacturer << "for" << macAddress.toString();
+            m_currentDiscoveryReply->processMacManufacturer(macAddress, cachedManufacturer);
+            requiresMacAddressLookup = false;
         }
+    }
 
-        if (requiresMacAddressLookup) {
-            // Lookup the mac address vendor if possible
-            if (m_macAddressDatabase->available()) {
-                // Not found in the cache, and the mac address database is available...let's make a query
-                MacAddressDatabaseReply *reply = m_macAddressDatabase->lookupMacAddress(macAddress.toString());
-                connect(reply, &MacAddressDatabaseReply::finished, m_currentReply, [=](){
-                    // Note: set the mac manufacturer explicitly to make the info complete (even an empty sring)
-                    qCDebug(dcNetworkDeviceDiscovery()) << "MAC manufacturer lookup finished for" << macAddress << ":" << reply->manufacturer();
-                    m_currentReply->processMacManufacturer(macAddress, reply->manufacturer());
-                });
-            } else {
-                // Not found in the cache, and no mac address database available...we are done with mac vendor
-                // Note: set the mac manufacturer explicitly to make the info complete
-                m_currentReply->processMacManufacturer(macAddress, QString());
+    if (!requiresMacAddressLookup)
+        return;
+
+    // Lookup the mac address vendor if possible
+    if (m_macAddressDatabase->available()) {
+        // Not found in the cache, and the mac address database is available...let's make a query
+        MacAddressDatabaseReply *reply = m_macAddressDatabase->lookupMacAddress(macAddress.toString());
+        m_runningMacDatabaseReplies.append(reply);
+        connect(reply, &MacAddressDatabaseReply::finished, this, [this, macAddress, reply](){
+            m_runningMacDatabaseReplies.removeAll(reply);
+
+            // Note: set the mac manufacturer explicitly to make the info complete (even an empty sring)
+            qCDebug(dcNetworkDeviceDiscovery()) << "MAC manufacturer lookup finished for" << macAddress << ":" << reply->manufacturer();
+            if (m_currentDiscoveryReply) {
+                m_currentDiscoveryReply->processMacManufacturer(macAddress, reply->manufacturer());
+
+                if (m_runningPingReplies.isEmpty() && m_runningMacDatabaseReplies.isEmpty() && !m_discoveryTimer->isActive()) {
+                    qCWarning(dcNetworkDeviceDiscovery()) << "All pending replies have finished.";
+                    finishDiscovery();
+                }
             }
-        }
+        });
+    } else {
+        // Not found in the cache, and no mac address database available...we are done with mac vendor
+        // Set the mac manufacturer explicitly to make the info complete
+        m_currentDiscoveryReply->processMacManufacturer(macAddress, QString());
     }
 }
 
@@ -722,8 +800,8 @@ void NetworkDeviceDiscoveryImpl::finishDiscovery()
     m_lastDiscovery = QDateTime::currentDateTime();
 
     // Clean up internal reply
-    if (m_currentReply) {
-        m_currentReply->processDiscoveryFinished();
+    if (m_currentDiscoveryReply) {
+        m_currentDiscoveryReply->processDiscoveryFinished();
     }
 }
 

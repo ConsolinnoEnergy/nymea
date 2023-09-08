@@ -208,7 +208,7 @@ void JsonHandler::registerObject(const QMetaObject &metaObject)
                 typeName = QString("$ref:BasicType");
             } else if (QString(metaProperty.typeName()).startsWith("QList")) {
                 QString elementType = QString(metaProperty.typeName()).remove("QList<").remove(">");
-                if (elementType == "EventTypeId" || elementType == "StateTypeId" || elementType == "ActionTypeId") {
+                if (elementType == "ThingId" || elementType == "EventTypeId" || elementType == "StateTypeId" || elementType == "ActionTypeId") {
                     elementType = "QUuid";
                 }
                 QVariant::Type variantType = QVariant::nameToType(elementType.toUtf8());
@@ -231,9 +231,8 @@ void JsonHandler::registerObject(const QMetaObject &metaObject)
     m_metaObjects.insert(className, metaObject);
 }
 
-void JsonHandler::registerObject(const QMetaObject &metaObject, const QMetaObject &listMetaObject)
+void JsonHandler::registerList(const QMetaObject &listMetaObject, const QMetaObject &metaObject)
 {
-    registerObject(metaObject);
     QString listTypeName = QString(listMetaObject.className()).split("::").last();
     QString objectTypeName = QString(metaObject.className()).split("::").last();
     m_objects.insert(listTypeName, QVariantList() << QVariant(QString("$ref:%1").arg(objectTypeName)));
@@ -243,6 +242,12 @@ void JsonHandler::registerObject(const QMetaObject &metaObject, const QMetaObjec
     Q_ASSERT_X(listMetaObject.indexOfProperty("count") >= 0, "JsonHandler", QString("List type %1 does not implement \"count\" property!").arg(listTypeName).toUtf8());
     Q_ASSERT_X(listMetaObject.indexOfMethod("get(int)") >= 0, "JsonHandler", QString("List type %1 does not implement \"Q_INVOKABLE QVariant get(int index)\" method!").arg(listTypeName).toUtf8());
     Q_ASSERT_X(listMetaObject.indexOfMethod("put(QVariant)") >= 0, "JsonHandler", QString("List type %1 does not implement \"Q_INVOKABLE void put(QVariant variant)\" method!").arg(listTypeName).toUtf8());
+}
+
+void JsonHandler::registerObject(const QMetaObject &metaObject, const QMetaObject &listMetaObject)
+{
+    registerObject(metaObject);
+    registerList(listMetaObject, metaObject);
 }
 
 QVariant JsonHandler::pack(const QMetaObject &metaObject, const void *value) const
@@ -347,6 +352,10 @@ QVariant JsonHandler::pack(const QMetaObject &metaObject, const void *value) con
                         }
                     } else if (propertyTypeName == "QList<QUuid>") {
                         foreach (const QUuid &entry, propertyValue.value<QList<QUuid>>()) {
+                            list << entry;
+                        }
+                    } else if (propertyTypeName == "QList<ThingId>") {
+                        foreach (const ThingId &entry, propertyValue.value<QList<ThingId>>()) {
                             list << entry;
                         }
                     } else if (propertyTypeName == "QList<EventTypeId>") {
@@ -477,6 +486,7 @@ QVariant JsonHandler::unpack(const QMetaObject &metaObject, const QVariant &valu
                         }
                         metaProperty.writeOnGadget(ptr, QVariant::fromValue(intList));
                     } else if (metaProperty.typeName() == QStringLiteral("QList<QUuid>")
+                               || metaProperty.typeName() == QStringLiteral("QList<ThingId>")
                                || metaProperty.typeName() == QStringLiteral("QList<EventTypeId>")
                                || metaProperty.typeName() == QStringLiteral("QList<StateTypeId>")
                                || metaProperty.typeName() == QStringLiteral("QList<ActionTypeId>")) {
