@@ -5,11 +5,9 @@
         {
             "name": "heatingPower",
             "type": "int",
-            "min": 0,
-            "max": 22080,
+            "min": 200,
             "unit": "Watt",
-            "maxValue": 3600,
-            "defaultValue": 0,
+            "defaultValue": 200,
             "writable": true
         }
     ]
