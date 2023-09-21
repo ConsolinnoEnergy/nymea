@@ -4,11 +4,12 @@
     "states": [
         {
             "name": "heatingPower",
-            "type": "int",
-            "min": 200,
+            "type": "uint",
             "unit": "Watt",
-            "defaultValue": 200,
-            "writable": true
+            "writable": true,
+            "minValue": "any",
+            "maxValue": "any"
+
         }
     ]
 }
