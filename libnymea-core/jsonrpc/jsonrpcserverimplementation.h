@@ -78,6 +78,7 @@ public:
 
     bool registerHandler(JsonHandler *handler) override;
     bool registerExperienceHandler(JsonHandler *handler, int majorVersion, int minorVersion) override;
+    bool registerExperienceHandler(JsonHandler *handler, int majorVersion, int minorVersion, int patchVersion) override;
 
 private:
     QHash<QString, JsonHandler *> handlers() const;
