@@ -479,6 +479,15 @@ bool JsonRPCServerImplementation::registerExperienceHandler(JsonHandler *handler
     return ret;
 }
 
+bool JsonRPCServerImplementation::registerExperienceHandler(JsonHandler *handler, int majorVersion, int minorVersion, int patchVersion)
+{
+    bool ret = registerHandler(handler);
+    if (ret) {
+        m_experiences.insert(handler, QString("%1.%2.%3").arg(majorVersion).arg(minorVersion).arg(patchVersion));
+    }
+    return ret;
+}
+
 /*! Send a JSON success response to the client with the given \a clientId,
  * \a commandId and \a params to the inerted \l{TransportInterface}.
  */
