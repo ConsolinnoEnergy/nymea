@@ -24,7 +24,7 @@
         {
             "name": "phaseCount",
             "type": "uint",
-            "minValue": 1,
+            "minValue": 0,
             "maxValue": 3,
             "optional": true
         },
