@@ -101,5 +101,9 @@
         <file>firesensor.json</file>
         <file>childlock.json</file>
         <file>smartheatingrod.json</file>
+	<file>smartwashingmachine.json</file>
+	<file>smartdryer.json</file>
+	<file>smartdishwasher.json</file>
+	<file>smartwhitegood.json</file>
     </qresource>
 </RCC>
