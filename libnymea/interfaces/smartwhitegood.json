@@ -1,0 +1,12 @@
+{
+	"descriptions": "The interface for smart white good applications providing basic functionallity.",
+	"actions": [
+		{
+			"name": "start"
+		},
+		{
+			"name": "stop",
+			"optional": true
+		}
+	]
+}
