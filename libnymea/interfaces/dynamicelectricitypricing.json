@@ -12,7 +12,7 @@
             "name": "priceSeries",
             "displayName": "Current market price",
             "displayNameEvent": "Current market price changed",
-            "type": "QArray",
+            "type": "QJsonObject",
             "unit": "EuroCentPerKiloWattHour",
             "defaultValue": 0
         },
