@@ -1,0 +1,9 @@
+version: '3'
+services:
+  nymeabuilder:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: nymeabuilder 
+        volumes:
+            - '.:/nymea-core'

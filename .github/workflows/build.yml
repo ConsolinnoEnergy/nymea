@@ -1,0 +1,46 @@
+name: Docker Image CI
+
+on:
+  schedule:
+    - cron: 0 6 * * MON
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        base-images: [debian:buster, debian:bullseye ]
+        architecture: [amd64, armhf, arm64]
+    env:
+      BASE: ${{ matrix.base-images }}
+      TARGETARCH: ${{ matrix.architecture }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: './builddir'
+    - name: Docker Cache
+      uses: actions/cache@v3.0.4
+      with:
+       path: /var/lib/docker
+       key: docker-cache
+      
+    - name: Build the Docker image
+      run: docker build ./builddir --file Dockerfile --tag builder-$BASE-$TARGETARCH:$(date +%s) --build-arg BASE --build-arg TARGETARCH
+      
+    - name: Docker Run Action
+      uses: addnab/docker-run-action@v3
+      with:
+        image: builder-${{ matrix.base-images }}-${{ matrix.architecture }}
+        options: -v ${{ github.workspace }}/:/builddir
+        run: |
+          cd /builddir
+          dpkg-buildpackage -us -uc -a$TARGETARCH
+        
+    - name: Store Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.base-images }}-${{ matrix.architecture }}
+        path: '*.deb'
