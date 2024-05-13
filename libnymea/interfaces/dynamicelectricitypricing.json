@@ -1,19 +1,19 @@
 {
     "states": [
         {
-            "name": "currentMarketPrice",
-            "displayName": "Current market price",
-            "displayNameEvent": "Current market price changed",
-            "type": "double",
+            "name": "priceSeries",
+            "displayName": "Current price series",
+            "displayNameEvent": "Current price series changed",
+            "type": "QVariantMap",
             "unit": "EuroCentPerKiloWattHour",
             "defaultValue": 0
         },
         {
-            "name": "priceSeries",
-            "displayName": "Current market price",
-            "displayNameEvent": "Current market price changed",
-            "type": "QJsonObject",
-            "unit": "EuroCentPerKiloWattHour",
+            "name": "validSince",
+            "displayName": "Valid since",
+            "displayNameEvent": "Valid since changed",
+            "unit": "UnixTime",
+            "type": "int",
             "defaultValue": 0
         },
         {
@@ -25,11 +25,19 @@
             "defaultValue": 0
         },
         {
-            "name": "validSince",
-            "displayName": "Valid since",
-            "displayNameEvent": "Valid since changed",
+            "name": "currentSlot",
+            "displayName": "Current time slot",
+            "displayNameEvent": "Current time slot changed",
             "unit": "UnixTime",
             "type": "int",
+            "defaultValue": 0
+        },
+        {
+            "name": "currentMarketPrice",
+            "displayName": "Current market price",
+            "displayNameEvent": "Current market price changed",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour",
             "defaultValue": 0
         }
     ]
