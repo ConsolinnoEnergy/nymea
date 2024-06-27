@@ -1,0 +1,15 @@
+{
+    "description": "The smart heating rod interface defines heating rod appliances which can be controlled digitally.",
+    "extends": "power",
+    "states": [
+        {
+            "name": "heatingPower",
+            "type": "uint",
+            "unit": "Watt",
+            "writable": true,
+            "minValue": "any",
+            "maxValue": "any"
+
+        }
+    ]
+}
