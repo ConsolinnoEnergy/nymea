@@ -1,3 +1,9 @@
+nymea (1.7.003) jammy; urgency=medium
+
+  * New gridsupport interface for §14a
+
+ -- Leonhard Heizinger <l.heizinger@consolinno.de>  Mo, 01 Jul 2024 08:17:51 +0100
+
 nymea (1.7.002) jammy; urgency=medium
 
   * Added smartheatingrod interface
