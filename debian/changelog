@@ -1,9 +1,16 @@
+nymea (1.7.002) jammy; urgency=medium
+
+  * Added smartheatingrod interface
+  * Changed evcharger interface to support phaseCount == 0 (undefined)
+  * Added smartwhitegood interface
+
+ -- Leonhard Heizinger <l.heizinger@consolinno.de>  Fr, 09 Feb 2024 08:17:51 +0100
+
 nymea (1.7.001) jammy; urgency=medium
 
    * Allow registering experiences with patch level in version
 
  -- Leonhard Heizinger <l.heizinger@consolinno.de>  Fr, 15 Sep 2023 12:17:51 +0100
-
 
 nymea (1.7.0-1) jammy; urgency=medium
 
