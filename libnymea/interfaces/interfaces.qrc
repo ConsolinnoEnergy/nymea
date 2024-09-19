@@ -106,5 +106,6 @@
 	    <file>smartdishwasher.json</file>
 	    <file>smartwhitegood.json</file>
         <file>dynamicelectricitypricing.json</file>
+        <file>gridsupport.json</file>
     </qresource>
 </RCC>

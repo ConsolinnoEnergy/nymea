@@ -1,0 +1,21 @@
+{
+    "description": "This interface is used for §14a grid support implementation in Germany",
+    "states": [
+        {
+            "name": "plimStatus",
+            "type": "QString",
+            "possibleValues": [
+                "unrestricted",
+                "shutoff",
+                "limited"
+            ],
+            "logged": true
+        },
+        {
+            "name": "plim",
+            "type": "double",
+            "unit": "Watt",
+            "logged": true
+        }
+    ]
+}
