@@ -1,3 +1,24 @@
+nymea (1.7.020-1) jammy; urgency=medium
+
+  * Added two new nymea interfaces:
+    - controllablebattery
+    - powerheatpump
+
+  * controllablebattery:
+    - New interface allowing control of battery power in watts.
+    - Introduced mandatory fields: `enableForcePower`, `enableForcePowerState`.
+    - Provides an API to implement a feedback loop for power control via `forcePower`.
+    - Support for timeout handling with `forcePowerTimeout` and `forcePowerTimeoutCountdown`.
+    - Timeout defaults to 15 minutes, resetting on every new control command.
+
+  * powerheatpump:
+    - New interface allowing control of heat pump power in watts.
+    - Introduced mandatory fields: `maxHeatpumpPower`, `proposedHeatpumpPower`.
+    - `maxHeatpumpPower` can be implemented by the plugin if not provided by the heat pump.
+    - Allows upper power limit recommendations for optimization or grid constraints.
+
+ -- Leonid Verhovskij <l.verhovskij@consolinno.de>  Tue, 08 Oct 2024 12:00:00 +0200
+
 nymea (1.7.010-1) jammy; urgency=medium
 
   * Changes in gridsupport interface
