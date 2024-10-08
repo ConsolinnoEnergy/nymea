@@ -1,0 +1,20 @@
+{
+    "description": "This interface can be used for heat pumps offering a api access to control power in watt of the heatpump.",
+    "extends": ["heatpump", "smartmeterconsumer"],
+    "states": [
+        {
+            "name": "maxHeatpumpPower",
+            "type": "double",
+            "unit": "Watt",
+            "writable": true,
+            "logged": true
+        },
+        {
+            "name": "proposedHeatpumpPower",
+            "type": "double",
+            "unit": "Watt",
+            "writable": true,
+            "logged": true
+        }
+    ]
+}
