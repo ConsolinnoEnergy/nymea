@@ -3,14 +3,14 @@
     "extends": ["heatpump", "smartmeterconsumer"],
     "states": [
         {
-            "name": "maxHeatpumpPower",
+            "name": "maxPower",
             "type": "double",
             "unit": "Watt",
             "writable": true,
             "logged": true
         },
         {
-            "name": "proposedHeatpumpPower",
+            "name": "setPointPower",
             "type": "double",
             "unit": "Watt",
             "writable": true,
