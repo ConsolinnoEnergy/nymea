@@ -1,7 +1,14 @@
+
+
+nymea (1.7.011-1) jammy; urgency=medium
+
+  * Update smartheatingrod interface
+
+ -- Leonhard Heizinger <l.heizinger@consolinno.de>  Tue, 22 Oct 2024 11:51:06 +0200
+
 nymea (1.7.010-1) jammy; urgency=medium
 
   * Changes in gridsupport interface
-  * Reevaluate smartheatingrod interface
 
  -- Leonhard Heizinger <l.heizinger@consolinno.de>  Mo, 10 Jul 2024 08:17:51 +0100
 
