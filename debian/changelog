@@ -1,4 +1,8 @@
+nymea (1.7.012) jammy; urgency=medium
 
+  * Added pvsurplusheatpump interface
+
+ -- Johannes Obermeier <j.obermeier@consolinno.de>  Thu, 24 Oct 2024 14:51:06 +0200
 
 nymea (1.7.011-1) jammy; urgency=medium
 
