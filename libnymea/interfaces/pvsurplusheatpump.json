@@ -1,0 +1,13 @@
+{
+    "description": "This interface can be used for heat pumps, which consider the actual PV surplus as input for the control of the heatpump within its heating boundaries.",
+    "extends": ["heatpump"],
+    "states": [
+        {
+            "name": "actualPvSurplus",
+            "type": "double",
+            "unit": "Watt",
+            "writable": true,
+            "logged": true
+        }
+    ]
+}
