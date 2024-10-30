@@ -108,6 +108,5 @@
         <file>dynamicelectricitypricing.json</file>
         <file>gridsupport.json</file>
         <file>controllablebattery.json</file>
-        <file>powerheatpump.json</file>
     </qresource>
 </RCC>
