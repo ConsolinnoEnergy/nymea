@@ -23,7 +23,7 @@
         },
         {
             "name": "forcePowerTimeout",
-            "type": "int",
+            "type": "uint",
             "unit": "Seconds",
             "defaultValue": 500,
             "writable": true,
@@ -32,7 +32,7 @@
         },
         {
             "name": "forcePowerTimeoutCountdown",
-            "type": "int",
+            "type": "uint",
             "unit": "Seconds",
             "defaultValue": 500,
             "cached": true,
