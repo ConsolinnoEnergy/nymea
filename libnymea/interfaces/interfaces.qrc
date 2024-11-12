@@ -108,5 +108,6 @@
 	    <file>smartwhitegood.json</file>
         <file>dynamicelectricitypricing.json</file>
         <file>gridsupport.json</file>
+        <file>controllablebattery.json</file>
     </qresource>
 </RCC>

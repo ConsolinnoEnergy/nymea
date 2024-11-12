@@ -1,3 +1,14 @@
+nymea (1.7.013) jammy; urgency=medium
+
+  * Added new nymea interface - controllablebattery:
+    - New interface allowing control of battery power in watts.
+    - Introduced mandatory fields: `enableForcePower`, `enableForcePowerState`.
+    - Provides an API to implement a feedback loop for power control via `forcePower`.
+    - Support for timeout handling with `forcePowerTimeout` and `forcePowerTimeoutCountdown`.
+    - Timeout defaults to 15 minutes, resetting on every new control command.
+
+ -- Leonid Verhovskij <l.verhovskij@consolinno.de>  Tue, 08 Oct 2024 12:00:00 +0200
+
 nymea (1.7.012) jammy; urgency=medium
 
   * Added pvsurplusheatpump interface
