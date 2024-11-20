@@ -1,4 +1,4 @@
-nymea (1.7.013) jammy; urgency=medium
+nymea (1.7.013-1) jammy; urgency=medium
 
   * Added new nymea interface - controllablebattery:
     - New interface allowing control of battery power in watts.
