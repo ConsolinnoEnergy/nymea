@@ -1,0 +1,42 @@
+{
+    "description": "This interface can be used for controllable batteries offering a api access to control power in watt of the battery.",
+    "extends": ["energystorage"],
+    "states": [
+        {
+            "name": "enableForcePower",
+            "type": "bool",
+            "defaultValue": false,
+            "writable": true
+        },
+        {
+            "name": "enableForcePowerState",
+            "type": "bool",
+            "defaultValue": false
+        },
+        {
+            "name": "forcePower",
+            "type": "double",
+            "unit": "Watt",
+            "defaultValue": 0.0,
+            "writable": true,
+            "cached": true
+        },
+        {
+            "name": "forcePowerTimeout",
+            "type": "uint",
+            "unit": "Seconds",
+            "defaultValue": 500,
+            "writable": true,
+            "cached": true,
+            "optional": true
+        },
+        {
+            "name": "forcePowerTimeoutCountdown",
+            "type": "uint",
+            "unit": "Seconds",
+            "defaultValue": 500,
+            "cached": true,
+            "optional": true
+        }
+    ]
+}
