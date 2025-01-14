@@ -2,11 +2,11 @@
     "description": "The interface for smart white good applications providing basic functionallity.",
     "states": [
         {
-        "name": "start",
-        "type": "bool",
-		"logged": true,
-		"writable": true,
-        "defaultValue": "false"
+            "name": "start",
+            "type": "bool",
+		    "logged": true,
+		    "writable": true,
+            "defaultValue": "false"
         }
     ]
 }
