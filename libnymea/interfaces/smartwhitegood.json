@@ -5,7 +5,7 @@
             "name": "start",
             "type": "bool",
 			"logged": true,
-            "writable": true,
+			"writable": true,
             "defaultValue": "false"
         }
     ]
