@@ -4,8 +4,8 @@
         {
             "name": "start",
             "type": "bool",
-		    "logged": true,
-		    "writable": true,
+		    "logged": "true",
+		    "writable": "true",
             "defaultValue": "false"
         }
     ]
