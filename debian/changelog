@@ -1,3 +1,9 @@
+nymea (1.7.014) jammy; urgency=medium
+
+  * Require first user setup even if support user is present
+
+ -- Luis Reber <l.reber@consolinno.de>  Mon, 24 Feb 2025 09:05:00 +0100
+
 nymea (1.7.013-3) jammy; urgency=medium
 
   * Added new nymea interface - controllablebattery:
