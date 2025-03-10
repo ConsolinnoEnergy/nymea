@@ -559,16 +559,14 @@ void LogEngine::handleJobFinished()
 
 void LogEngine::rotate(const QString &dbName)
 {
-    int index = 1;
-    while (QFileInfo(QString("%1.%2").arg(dbName).arg(index)).exists()) {
-        index++;
-    }
-    qCDebug(dcLogEngine()) << "Backing up old database file to" << QString("%1.%2").arg(dbName).arg(index);
+    // Do not rotate, instead delete old / corrupt database.
+    // Backups are not used and are thus not needed.
+    qCDebug(dcLogEngine()) << "Delete corrupt database" << QString("%1").arg(dbName);
     QFile f(dbName);
-    if (!f.rename(QString("%1.%2").arg(dbName).arg(index))) {
-        qCWarning(dcLogEngine()) << "Error backing up old database.";
+    if (!f.remove(QString("%1").arg(dbName))) {
+        qCWarning(dcLogEngine()) << "Error deleting old database.";
     } else {
-        qCDebug(dcLogEngine()) << "Successfully moved old database";
+        qCDebug(dcLogEngine()) << "Successfully removed old database";
     }
 }
 
