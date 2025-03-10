@@ -1,3 +1,9 @@
+nymea (1.7.015) jammy; urgency=medium
+
+  * LogEngine: Delete corrupt nymead.sqlite database, instead of rotating
+
+ -- Luis Reber <l.reber@consolinno.de>  Mon, 10 Marh 025 15:31:00 +0100
+
 nymea (1.7.014) jammy; urgency=medium
 
   * Require first user setup even if support user is present
