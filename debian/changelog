@@ -1,3 +1,9 @@
+nymea (1.7.016) jammy; urgency=medium
+
+  * Extended interface controllablebattery by `setMaxSoC`
+
+ -- Luis Reber <l.reber@consolinno.de>  Mon, 10 Mar 025 15:31:00 +0100
+
 nymea (1.7.015) jammy; urgency=medium
 
   * LogEngine: Delete corrupt nymead.sqlite database, instead of rotating
