@@ -24,6 +24,12 @@
             "type": "QString",
             "allowedValues": ["idle", "charging", "discharging"],
             "optional": true
+        },
+        {
+            "name": "batteryVoltage",
+            "type": "double",
+            "unit": "Volt",
+            "optional": true
         }
     ]
 }
