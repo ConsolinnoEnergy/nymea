@@ -49,7 +49,7 @@
         },
         {
             "name": "maxChargingCurrent",
-            "type": "uint",
+            "type": "double",
             "writable": true,
             "unit": "Ampere",
             "minValue": "any",
