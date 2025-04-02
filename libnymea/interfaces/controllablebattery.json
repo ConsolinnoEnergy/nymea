@@ -52,7 +52,7 @@
             "type": "double",
             "writable": true,
             "unit": "Ampere",
-            "minValue": "any",
+            "minValue": 0,
             "maxValue": "any",
             "optional": true
         },
