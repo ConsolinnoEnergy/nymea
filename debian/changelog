@@ -1,3 +1,9 @@
+nymea (1.7.016) jammy; urgency=medium
+
+  * Fix reachable changed before the network address is known
+
+ -- Luis Reber <l.reber@consolinno.de>  Fri, 25 Apr 2025 14:40:00 +0200
+
 nymea (1.7.015) jammy; urgency=medium
 
   * LogEngine: Delete corrupt nymead.sqlite database, instead of rotating
