@@ -1,5 +1,5 @@
 {
-    "description": "This interface can be used for controllable batteries offering an api access to control power in watt of the battery, to set the maximum allowed SoC or maximum allowed charging current.",
+    "description": "This interface can be used for controllable batteries offering an api access to control power in watt of the battery.",
     "extends": ["energystorage"],
     "states": [
         {
@@ -36,31 +36,6 @@
             "unit": "Seconds",
             "defaultValue": 500,
             "cached": true,
-            "optional": true
-        },
-        {
-            "name": "setMaxSoC",
-            "type": "uint",
-            "unit": "Percentage",
-            "defaultValue": 100,
-            "writable": true,
-            "cached": true,
-            "optional": true
-        },
-        {
-            "name": "maxChargingCurrent",
-            "type": "double",
-            "writable": true,
-            "unit": "Ampere",
-            "minValue": 0,
-            "maxValue": "any",
-            "optional": true
-        },
-        {
-            "name": "enableMaxChargingCurrent",
-            "type": "bool",
-            "defaultValue": false,
-            "writable": true,
             "optional": true
         }
     ]

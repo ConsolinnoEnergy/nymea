@@ -1,6 +1,6 @@
 nymea (1.7.016) jammy; urgency=medium
 
-  * Extended interface controllablebattery 
+  * Added new interface limitablebattery 
     - Possibility to set maximum SoC with `setMaxSoC`
     - Possibility to set maximum charge current to `maxChargingCurrent` if `enableMaxChargingCurrent` is true
     - Possibility to reset the maximum charge current to its default if `enableMaxChargingCurrent` is false
