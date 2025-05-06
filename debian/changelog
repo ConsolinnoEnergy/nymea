@@ -1,3 +1,13 @@
+nymea (1.7.016) jammy; urgency=medium
+
+  * Added new interface limitablebattery 
+    - Possibility to set maximum SoC with `setMaxSoC`
+    - Possibility to set maximum charge current to `maxChargingCurrent` if `enableMaxChargingCurrent` is true
+    - Possibility to reset the maximum charge current to its default if `enableMaxChargingCurrent` is false
+  * Extended battery interface by `batteryVoltage`
+
+ -- Luis Reber <l.reber@consolinno.de>  Mon, 10 Mar 025 15:31:00 +0100
+
 nymea (1.7.015) jammy; urgency=medium
 
   * LogEngine: Delete corrupt nymead.sqlite database, instead of rotating
