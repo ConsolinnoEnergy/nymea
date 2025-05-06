@@ -5,6 +5,7 @@ nymea (1.7.016) jammy; urgency=medium
     - Possibility to set maximum charge current to `maxChargingCurrent` if `enableMaxChargingCurrent` is true
     - Possibility to reset the maximum charge current to its default if `enableMaxChargingCurrent` is false
   * Extended battery interface by `batteryVoltage`
+  * Added limitablebattery to interfaces.qrc
 
  -- Luis Reber <l.reber@consolinno.de>  Mon, 10 Mar 025 15:31:00 +0100
 
