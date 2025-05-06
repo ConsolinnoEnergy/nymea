@@ -1,8 +1,14 @@
 nymea (1.7.016) jammy; urgency=medium
 
   * Fix reachable changed before the network address is known
+  * Added new interface limitablebattery 
+    - Possibility to set maximum SoC with `setMaxSoC`
+    - Possibility to set maximum charge current to `maxChargingCurrent` if `enableMaxChargingCurrent` is true
+    - Possibility to reset the maximum charge current to its default if `enableMaxChargingCurrent` is false
+  * Extended battery interface by `batteryVoltage`
+  * Added limitablebattery to interfaces.qrc
 
- -- Luis Reber <l.reber@consolinno.de>  Fri, 25 Apr 2025 14:40:00 +0200
+ -- Luis Reber <l.reber@consolinno.de>  Mon, 10 Mar 025 15:31:00 +0100
 
 nymea (1.7.015) jammy; urgency=medium
 
