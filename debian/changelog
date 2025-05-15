@@ -1,4 +1,4 @@
-nymea (1.7.016) jammy; urgency=medium
+nymea (1.7.016-1) jammy; urgency=medium
 
   * Fix reachable changed before the network address is known
   * Added new interface limitablebattery 
