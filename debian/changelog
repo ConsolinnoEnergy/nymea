@@ -1,3 +1,9 @@
+nymea (1.7.017) jammy; urgency=medium
+
+  * Add limitgridexport interface for LPP
+
+ -- Luis Reber <l.reber@consolinno.de>  Mon, 28 Apr 2025 14:29:00 +0200
+
 nymea (1.7.016-1) jammy; urgency=medium
 
   * Fix reachable changed before the network address is known
