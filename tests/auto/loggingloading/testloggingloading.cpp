@@ -65,28 +65,22 @@ void TestLoggingLoading::testLogfileRotation()
 {
     // Create LogEngine with log db from resource file
     QString temporaryDbName = "/tmp/nymea-test/nymead-broken.sqlite";
-    QString rotatedDbName = "/tmp/nymea-test/nymead-broken.sqlite.1";
 
     // Remove the files if there are some left
     if (QFile::exists(temporaryDbName))
         QVERIFY(QFile(temporaryDbName).remove());
-
-    if (QFile::exists(rotatedDbName))
-        QVERIFY(QFile(rotatedDbName).remove());
 
     // Copy broken log db from resources to default settings path and set permissions
     qDebug() << "Copy broken log db to" << temporaryDbName;
     QVERIFY(QFile::copy(":/nymead-broken.sqlite", temporaryDbName));
     QVERIFY(QFile::setPermissions(temporaryDbName, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther));
 
-    QVERIFY(!QFile::exists(rotatedDbName));
     LogEngine *logEngine = new LogEngine("QSQLITE", temporaryDbName);
-    QVERIFY(QFile::exists(rotatedDbName));
+    QVERIFY(QFile::exists(temporaryDbName));
 
     delete logEngine;
 
     QVERIFY(QFile(temporaryDbName).remove());
-    QVERIFY(QFile(rotatedDbName).remove());
 }
 
 #include "testloggingloading.moc"

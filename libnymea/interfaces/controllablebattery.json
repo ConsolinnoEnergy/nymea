@@ -1,5 +1,5 @@
 {
-    "description": "This interface can be used for controllable batteries offering a api access to control power in watt of the battery.",
+    "description": "This interface can be used for controllable batteries offering an api access to control power in watt of the battery.",
     "extends": ["energystorage"],
     "states": [
         {

@@ -119,6 +119,7 @@ UserManager::UserManager(const QString &dbName, QObject *parent):
 /*! Will return true if the database is working fine but doesn't have any information on users whatsoever.
  *  That is, neither a user nor an anonymous token.
  *  This may be used to determine whether a first-time setup is required.
+ *  Will return true if only the support user is present.
  */
 bool UserManager::initRequired() const
 {
@@ -130,7 +131,10 @@ bool UserManager::initRequired() const
         return false;
     }
 
-    return users().isEmpty() && !result.first();
+    const UserInfoList userList = users();
+    const bool hasOnlySupportUser = (userList.size() == 1) && (userList.constFirst().username() == QStringLiteral("support"));
+
+    return (users().isEmpty() && !result.first()) || hasOnlySupportUser;
 }
 
 /*! Returns the list of user names for this UserManager. */

@@ -109,5 +109,6 @@
         <file>dynamicelectricitypricing.json</file>
         <file>gridsupport.json</file>
         <file>controllablebattery.json</file>
+        <file>limitablebattery.json</file>
     </qresource>
 </RCC>

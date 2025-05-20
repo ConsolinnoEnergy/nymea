@@ -602,10 +602,17 @@ void NetworkDeviceDiscoveryImpl::evaluateMonitor(NetworkDeviceMonitorImpl *monit
         requiresRefresh = true;
     }
 
-    if (!requiresRefresh && currentDateTime <= monitor->lastSeen().addSecs(m_monitorInterval)) {
+    if (!requiresRefresh && monitor->networkDeviceInfo().isComplete() && currentDateTime <= monitor->lastSeen().addSecs(m_monitorInterval)) {
         // We have seen this device within the last minute, make sure the monitor is reachable
         monitor->setReachable(true);
         return;
+    }
+
+    if (!requiresRefresh && monitor->reachable() && currentDateTime <= monitor->lastConnectionAttempt().addSecs(m_rediscoveryInterval)) {
+        // Note: in some cases only a failed ping is able to mark a device as offline if some ARP proxy is responding to our ARP requests.
+        // Ping all network devices in any case once in a while, even if we think it is reachable.
+        qCDebug(dcNetworkDeviceDiscovery()) << monitor << "performing verification ping.";
+        requiresRefresh = true;
     }
 
     if (!requiresRefresh)
@@ -648,13 +655,16 @@ void NetworkDeviceDiscoveryImpl::processArpTraffic(const QNetworkInterface &inte
     NetworkDeviceMonitorImpl *monitor = m_monitors.value(macAddress);
     if (monitor) {
         monitor->setLastSeen(now);
-        monitor->setReachable(true);
         if (monitor->networkDeviceInfo().address() != address) {
             NetworkDeviceInfo info = monitor->networkDeviceInfo();
             info.setAddress(address);
             monitor->setNetworkDeviceInfo(info);
             qCDebug(dcNetworkDeviceDiscovery()) << "NetworkDeviceMonitor" << monitor << "ip address changed";
             emit monitor->networkDeviceInfoChanged(monitor->networkDeviceInfo());
+        }
+
+        if (monitor->networkDeviceInfo().isComplete()) {
+            monitor->setReachable(true);
         }
     }
 
