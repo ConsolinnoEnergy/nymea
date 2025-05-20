@@ -1,12 +1,31 @@
 {
-    "description": "The interface for smart white good applications providing basic functionallity.",
-    "states": [
-        {
-            "name": "start",
-            "type": "bool",
-		    "logged": true,
-		    "writable": true,
-            "defaultValue": false
-        }
-    ]
+	"descriptions": "The interface for smart white good applications providing basic functionallity.",
+	"actions": [
+		{
+			"name": "start"
+		}
+	],
+	"states": [
+		{
+			"name": "operationState",
+			"type": "QString",
+			"logged": true
+		},
+		{
+			"name": "progress",
+			"type": "int",
+			"unit": "Percentage",
+			"logged": true
+		},
+		{
+			"name": "selectedProgram",
+			"type": "QString",
+			"logged": true
+		},
+		{
+			"name": "endTime",
+			"type": "QString",
+			"logged": true
+		}
+	]
 }
