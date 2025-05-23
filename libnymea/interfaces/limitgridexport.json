@@ -5,6 +5,7 @@
             "name": "enableExportLimit",
             "type": "bool",
             "defaultValue": false,
+            "cached": true,
             "writable": true
         },
         {
@@ -12,7 +13,7 @@
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,
-            "cached": false,
+            "cached": true,
             "writable": true,
             "minValue": 0
         }
