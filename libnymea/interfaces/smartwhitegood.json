@@ -1,31 +1,42 @@
 {
-	"descriptions": "The interface for smart white good applications providing basic functionallity.",
-	"actions": [
-		{
-			"name": "start"
-		}
-	],
-	"states": [
-		{
-			"name": "operationState",
-			"type": "QString",
-			"logged": true
-		},
-		{
-			"name": "progress",
-			"type": "int",
-			"unit": "Percentage",
-			"logged": true
-		},
-		{
-			"name": "selectedProgram",
-			"type": "QString",
-			"logged": true
-		},
-		{
-			"name": "endTime",
-			"type": "QString",
-			"logged": true
-		}
-	]
+  "descriptions": "The interface for smart white good applications providing basic functionality.",
+  "actions": [
+    {
+      "name": "start"
+    }
+  ],
+  "states": [
+    {
+      "name": "operationState",
+      "type": "QString",
+      "allowedValues": [
+        "Inactive",
+        "Ready",
+        "Delayed start",
+        "Run",
+        "Action required",
+        "Finished",
+        "Aborting"
+      ],
+      "logged": true
+    },
+    {
+      "name": "progress",
+      "type": "uint",
+      "unit": "Percentage",
+      "minValue": 0,
+      "maxValue": 100,
+      "logged": true
+    },
+    {
+      "name": "selectedProgram",
+      "type": "QString",
+      "logged": true
+    },
+    {
+      "name": "endTime",
+      "type": "UnitUnixTime",
+      "logged": true
+    }
+  ]
 }
