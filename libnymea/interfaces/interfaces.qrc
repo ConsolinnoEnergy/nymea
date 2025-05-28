@@ -110,5 +110,6 @@
         <file>gridsupport.json</file>
         <file>controllablebattery.json</file>
         <file>limitablebattery.json</file>
+        <file>limitgridexport.json</file>
     </qresource>
 </RCC>
