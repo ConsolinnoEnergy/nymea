@@ -9,7 +9,7 @@
     {
       "name": "operationState",
       "type": "QString",
-      "allowedValues": [
+      "possibleValues": [
         "Inactive",
         "Ready",
         "Delayed start",
