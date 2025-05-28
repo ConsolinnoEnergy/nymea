@@ -1,0 +1,21 @@
+{
+    "description": "This interface is used for setting grid export limit",
+    "states": [
+        {
+            "name": "enableExportLimit",
+            "type": "bool",
+            "defaultValue": false,
+            "cached": true,
+            "writable": true
+        },
+        {
+            "name": "exportLimit",
+            "type": "double",
+            "unit": "Watt",
+            "defaultValue": 0,
+            "cached": true,
+            "writable": true,
+            "minValue": 0
+        }
+    ]
+}
