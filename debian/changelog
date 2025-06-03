@@ -1,3 +1,9 @@
+nymea (1.7.018) jammy; urgency=medium
+
+  * Updated Parameters of WhiteGood Interface
+
+ -- Nicolas Frank <n.frank@consolinno.de>  Tue, 20 May 2025 13:43:00 +0100
+
 nymea (1.7.017) jammy; urgency=medium
 
   * Add limitgridexport interface for LPP
