@@ -12,14 +12,24 @@
             "displayName": "Current levies series",
             "displayNameEvent": "Current levies series changed",
             "type": "QVariantMap",
-            "defaultValue": 0
+            "defaultValue": 0,
+            "optional": true
+        },
+        {
+            "name": "electricitySeries",
+            "displayName": "Current electricity series",
+            "displayNameEvent": "Current electricity series changed",
+            "type": "QVariantMap",
+            "defaultValue": 0,
+            "optional": true
         },
         {
             "name": "gridSeries",
             "displayName": "Current grid series",
             "displayNameEvent": "Current grid series changed",
             "type": "QVariantMap",
-            "defaultValue": 0
+            "defaultValue": 0,
+            "optional": true
         },
         {
             "name": "validSince",
