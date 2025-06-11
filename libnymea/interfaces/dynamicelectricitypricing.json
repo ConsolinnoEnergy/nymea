@@ -8,6 +8,20 @@
             "defaultValue": 0
         },
         {
+            "name": "leviesSeries",
+            "displayName": "Current levies series",
+            "displayNameEvent": "Current levies series changed",
+            "type": "QVariantMap",
+            "defaultValue": 0
+        },
+        {
+            "name": "gridSeries",
+            "displayName": "Current grid series",
+            "displayNameEvent": "Current grid series changed",
+            "type": "QVariantMap",
+            "defaultValue": 0
+        },
+        {
             "name": "validSince",
             "displayName": "Valid since",
             "displayNameEvent": "Valid since changed",
