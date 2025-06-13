@@ -5,6 +5,7 @@
             "displayName": "Current price series",
             "displayNameEvent": "Current price series changed",
             "type": "QVariantMap",
+            "unit": "EuroCentPerKiloWattHour",
             "defaultValue": 0
         },
         {
@@ -13,6 +14,7 @@
             "displayNameEvent": "Current levies series changed",
             "type": "QVariantMap",
             "defaultValue": 0,
+            "unit": "EuroCentPerKiloWattHour",
             "optional": true
         },
         {
@@ -21,6 +23,7 @@
             "displayNameEvent": "Current grid series changed",
             "type": "QVariantMap",
             "defaultValue": 0,
+            "unit": "EuroCentPerKiloWattHour",
             "optional": true
         },
         {
@@ -29,6 +32,7 @@
             "displayNameEvent": "Current total cost series changed",
             "type": "QVariantMap",
             "defaultValue": 0,
+            "unit": "EuroCentPerKiloWattHour",
             "optional": true
         },
         {
