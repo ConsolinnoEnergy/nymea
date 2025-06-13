@@ -16,17 +16,17 @@
             "optional": true
         },
         {
-            "name": "electricitySeries",
-            "displayName": "Current electricity series",
-            "displayNameEvent": "Current electricity series changed",
+            "name": "gridSeries",
+            "displayName": "Current grid series",
+            "displayNameEvent": "Current grid series changed",
             "type": "QVariantMap",
             "defaultValue": 0,
             "optional": true
         },
         {
-            "name": "gridSeries",
-            "displayName": "Current grid series",
-            "displayNameEvent": "Current grid series changed",
+            "name": "totalCostSeries",
+            "displayName": "Current total cost series",
+            "displayNameEvent": "Current total cost series changed",
             "type": "QVariantMap",
             "defaultValue": 0,
             "optional": true
