@@ -1,6 +1,10 @@
 nymea (1.7.018) jammy; urgency=medium
 
   * Updated Parameters of WhiteGood Interface
+  * abstract interfaces for LPP and LPC
+    - limitableconsumer
+    - limitableproducer
+    - controllableconsumer
 
  -- Nicolas Frank <n.frank@consolinno.de>  Tue, 20 May 2025 13:43:00 +0100
 

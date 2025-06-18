@@ -1,4 +1,5 @@
 {
+    "deprecated": "For limiting battery charging power or current use limitableconsumer instead",
     "description": "This interface can be used for limitable batteries offering an api to set the maximum allowed SoC or maximum allowed charging current.",
     "extends": ["energystorage"],
     "states": [        
