@@ -1,6 +1,7 @@
 nymea (1.7.019) jammy; urgency=medium
 
   * Updated EndTime Parameter of WhiteGood Interface
+  * Added new interface epexdatasource
 
  -- Nicolas Frank <n.frank@consolinno.de>  Tue, 24 Jun 2025 11:08:00 +0100
  
