@@ -111,5 +111,6 @@
         <file>controllablebattery.json</file>
         <file>limitablebattery.json</file>
         <file>limitgridexport.json</file>
+        <file>epexdatasource.json</file>
     </qresource>
 </RCC>
