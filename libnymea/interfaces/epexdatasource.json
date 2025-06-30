@@ -1,0 +1,50 @@
+{
+    "states": [
+        {
+            "name": "priceSeries",
+            "displayName": "Current price series",
+            "displayNameEvent": "Current price series changed",
+            "type": "QVariantMap",
+            "defaultValue": 0
+        },
+        {
+            "name": "validSince",
+            "displayName": "Valid since",
+            "displayNameEvent": "Valid since changed",
+            "unit": "UnixTime",
+            "type": "int",
+            "defaultValue": 0
+        },
+        {
+            "name": "validUntil",
+            "displayName": "Valid until",
+            "displayNameEvent": "Valid until changed",
+            "unit": "UnixTime",
+            "type": "int",
+            "defaultValue": 0
+        },
+        {
+            "name": "currentSlot",
+            "displayName": "Current time slot",
+            "displayNameEvent": "Current time slot changed",
+            "unit": "UnixTime",
+            "type": "int",
+            "defaultValue": 0
+        },
+        {
+            "name": "currentSlotISO",
+            "displayName": "Current time slot (ISO)",
+            "displayNameEvent": "Current time slot (ISO) changed",
+            "type": "QString",
+            "defaultValue": ""
+        },
+        {
+            "name": "currentMarketPrice",
+            "displayName": "Current market price",
+            "displayNameEvent": "Current market price changed",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour",
+            "defaultValue": 0
+        }
+    ]
+}
