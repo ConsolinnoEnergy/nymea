@@ -18,6 +18,15 @@
             "cached": true,
             "writable": true,
             "optional": true
+        },
+        {
+            "name": "controllableLocalSystem",
+            "displayName": "controllable local systems (CLS) for §14a use cases like LPC",
+            "type": "bool",
+            "defaultValue": false,
+            "cached": true,
+            "writable": true,
+            "optional": true
         }
     ]
 }
