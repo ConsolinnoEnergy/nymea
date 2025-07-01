@@ -2,16 +2,16 @@
     "states": [
         {
             "defaultValue": 0,
-            "displayName": "Current price series",
-            "displayNameEvent": "Current price series changed",
+            "displayName": "Energy price series",
+            "displayNameEvent": "Energy price series changed",
             "name": "priceSeries",
             "type": "QVariantMap",
             "unit": "EuroCentPerKiloWattHour"
         },
         {
             "defaultValue": 0,
-            "displayName": "Current levies series",
-            "displayNameEvent": "Current levies series changed",
+            "displayName": "Levies series",
+            "displayNameEvent": "Levies series changed",
             "name": "leviesSeries",
             "optional": true,
             "type": "QVariantMap",
@@ -19,8 +19,8 @@
         },
         {
             "defaultValue": 0,
-            "displayName": "Current grid series",
-            "displayNameEvent": "Current grid series changed",
+            "displayName": "Grid fee series",
+            "displayNameEvent": "Grid fee series changed",
             "name": "gridSeries",
             "optional": true,
             "type": "QVariantMap",
@@ -28,8 +28,8 @@
         },
         {
             "defaultValue": 0,
-            "displayName": "Current total cost series",
-            "displayNameEvent": "Current total cost series changed",
+            "displayName": "Total cost series",
+            "displayNameEvent": "Total cost series changed",
             "name": "totalCostSeries",
             "optional": true,
             "type": "QVariantMap",
