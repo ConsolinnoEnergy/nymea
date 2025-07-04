@@ -1,0 +1,32 @@
+{
+    "description": "This interface can be used to limit the power of consumers.",
+    "extends": [],
+    "states": [
+        {
+            "name": "activateLpc",
+            "type": "bool",
+            "defaultValue": false,
+            "cached": true,
+            "writable": true
+        },
+        {
+            "name": "powerLimitConsumer",
+            "type": "double",
+            "unit": "Watt",
+            "defaultValue": 0,
+            "minValue": 0,
+            "cached": true,
+            "writable": true,
+            "optional": true
+        },
+        {
+            "name": "controllableLocalSystem",
+            "displayName": "controllable local system (CLS)",
+            "type": "bool",
+            "defaultValue": false,
+            "cached": true,
+            "writable": true,
+            "optional": true
+        }
+    ]
+}

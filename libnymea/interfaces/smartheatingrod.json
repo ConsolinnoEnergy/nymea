@@ -1,4 +1,5 @@
 {
+    "deprecated": "Use controllableconsumer and heatingrod instead",
     "description": "The smart heating rod interface defines heating rod appliances which can be controlled digitally.",
     "states": [
         {

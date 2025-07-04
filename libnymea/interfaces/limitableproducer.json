@@ -1,0 +1,22 @@
+{
+    "description": "This interface can be used to limit the power of producers.",
+    "extends": [],
+    "states": [
+        {
+            "name": "activateLpp",
+            "type": "bool",
+            "defaultValue": false,
+            "cached": true,
+            "writable": true
+        },
+        {
+            "name": "powerLimitProducer",
+            "type": "double",
+            "unit": "Watt",
+            "defaultValue": 0,
+            "minValue": 0,
+            "cached": true,
+            "writable": true
+        }
+    ]
+}

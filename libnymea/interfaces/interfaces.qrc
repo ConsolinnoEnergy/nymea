@@ -112,5 +112,9 @@
         <file>limitablebattery.json</file>
         <file>limitgridexport.json</file>
         <file>epexdatasource.json</file>
+        <file>limitableproducer.json</file>
+        <file>limitableconsumer.json</file>
+        <file>controllableconsumer.json</file>
+        <file>heatingrod.json</file>
     </qresource>
 </RCC>
