@@ -8,7 +8,6 @@ nymea (1.7.019) jammy; urgency=medium
  nymea (1.7.018) jammy; urgency=medium
 
   * Updated Parameters of WhiteGood Interface
-  * Update dynamicelectricitypricing Interface 
 
  -- Nicolas Frank <n.frank@consolinno.de>  Tue, 20 May 2025 13:43:00 +0100
 

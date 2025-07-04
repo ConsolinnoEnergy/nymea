@@ -1,102 +1,50 @@
 {
     "states": [
         {
-            "defaultValue": 0,
-            "displayName": "Energy price series",
-            "displayNameEvent": "Energy price series changed",
             "name": "priceSeries",
+            "displayName": "Current price series",
+            "displayNameEvent": "Current price series changed",
             "type": "QVariantMap",
-            "unit": "EuroCentPerKiloWattHour"
+            "defaultValue": 0
         },
         {
-            "defaultValue": 0,
-            "displayName": "Levies series",
-            "displayNameEvent": "Levies series changed",
-            "name": "leviesSeries",
-            "optional": true,
-            "type": "QVariantMap",
-            "unit": "EuroCentPerKiloWattHour"
-        },
-        {
-            "defaultValue": 0,
-            "displayName": "Grid fee series",
-            "displayNameEvent": "Grid fee series changed",
-            "name": "gridSeries",
-            "optional": true,
-            "type": "QVariantMap",
-            "unit": "EuroCentPerKiloWattHour"
-        },
-        {
-            "defaultValue": 0,
-            "displayName": "Total cost series",
-            "displayNameEvent": "Total cost series changed",
-            "name": "totalCostSeries",
-            "optional": true,
-            "type": "QVariantMap",
-            "unit": "EuroCentPerKiloWattHour"
-        },
-        {
-            "defaultValue": 0,
+            "name": "validSince",
             "displayName": "Valid since",
             "displayNameEvent": "Valid since changed",
-            "name": "validSince",
+            "unit": "UnixTime",
             "type": "int",
-            "unit": "UnixTime"
+            "defaultValue": 0
         },
         {
-            "defaultValue": 0,
+            "name": "validUntil",
             "displayName": "Valid until",
             "displayNameEvent": "Valid until changed",
-            "name": "validUntil",
+            "unit": "UnixTime",
             "type": "int",
-            "unit": "UnixTime"
+            "defaultValue": 0
         },
         {
-            "defaultValue": 0,
+            "name": "currentSlot",
             "displayName": "Current time slot",
             "displayNameEvent": "Current time slot changed",
-            "name": "currentSlot",
+            "unit": "UnixTime",
             "type": "int",
-            "unit": "UnixTime"
+            "defaultValue": 0
         },
         {
-            "defaultValue": "",
+            "name": "currentSlotISO",
             "displayName": "Current time slot (ISO)",
             "displayNameEvent": "Current time slot (ISO) changed",
-            "name": "currentSlotISO",
-            "type": "QString"
+            "type": "QString",
+            "defaultValue": ""
         },
         {
-            "defaultValue": 0,
-            "displayName": "Current total cost",
-            "displayNameEvent": "Current total cost changed",
-            "name": "currentTotalCost",
+            "name": "currentMarketPrice",
+            "displayName": "Current market price",
+            "displayNameEvent": "Current market price changed",
             "type": "double",
-            "unit": "EuroCentPerKiloWattHour"
-        },
-        {
-            "defaultValue": 0,
-            "displayName": "Total cost average deviation",
-            "displayNameEvent": "Average deviation changed",
-            "name": "averageDeviation",
-            "type": "int",
-            "unit": "Percentage"
-        },
-        {
-            "defaultValue": 0,
-            "displayName": "Valid until",
-            "displayNameEvent": "Valid until changed",
-            "name": "validUntil",
-            "type": "int",
-            "unit": "UnixTime"
-        },
-        {
-            "defaultValue": 0,
-            "displayName": "Average total cost",
-            "displayNameEvent": "Average total cost changed",
-            "name": "averageTotalCost",
-            "type": "double",
-            "unit": "EuroCentPerKiloWattHour"
+            "unit": "EuroCentPerKiloWattHour",
+            "defaultValue": 0
         }
     ]
 }
