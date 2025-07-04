@@ -16,8 +16,7 @@
             "defaultValue": 0,
             "minValue": 0,
             "cached": true,
-            "writable": true,
-            "optional": true
+            "writable": true
         }
     ]
 }
