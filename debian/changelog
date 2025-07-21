@@ -1,4 +1,4 @@
-nymea (1.7.019) jammy; urgency=medium
+nymea (1.7.019-1) jammy; urgency=medium
 
   * Updated EndTime Parameter of WhiteGood Interface
   * Added new interface epexdatasource
