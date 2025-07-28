@@ -84,14 +84,6 @@
         },
         {
             "defaultValue": 0,
-            "displayName": "Valid until",
-            "displayNameEvent": "Valid until changed",
-            "name": "validUntil",
-            "type": "int",
-            "unit": "UnixTime"
-        },
-        {
-            "defaultValue": 0,
             "displayName": "Average total cost",
             "displayNameEvent": "Average total cost changed",
             "name": "averageTotalCost",
