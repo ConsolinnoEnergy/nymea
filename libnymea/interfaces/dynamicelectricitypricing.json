@@ -86,6 +86,30 @@
             "name": "averageTotalCost",
             "type": "double",
             "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Current energy cost",
+            "displayNameEvent": "Current energy cost changed",
+            "name": "currentEnergyCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Current levies",
+            "displayNameEvent": "Current levies cost changed",
+            "name": "currentLeviesCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Current grid fee",
+            "displayNameEvent": "Current grid fee changed",
+            "name": "currentGridFeeCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
         }
     ]
 }
