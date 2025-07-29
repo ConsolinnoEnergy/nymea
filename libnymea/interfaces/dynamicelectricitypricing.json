@@ -13,7 +13,6 @@
             "displayName": "Levies series",
             "displayNameEvent": "Levies series changed",
             "name": "leviesSeries",
-            "optional": true,
             "type": "QVariantMap",
             "unit": "EuroCentPerKiloWattHour"
         },
@@ -22,7 +21,6 @@
             "displayName": "Grid fee series",
             "displayNameEvent": "Grid fee series changed",
             "name": "gridSeries",
-            "optional": true,
             "type": "QVariantMap",
             "unit": "EuroCentPerKiloWattHour"
         },
@@ -31,7 +29,6 @@
             "displayName": "Total cost series",
             "displayNameEvent": "Total cost series changed",
             "name": "totalCostSeries",
-            "optional": true,
             "type": "QVariantMap",
             "unit": "EuroCentPerKiloWattHour"
         },
