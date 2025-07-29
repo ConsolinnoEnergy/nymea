@@ -110,6 +110,33 @@
             "name": "currentGridFeeCost",
             "type": "double",
             "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Data duration",
+            "displayNameEvent": "Data duration changed",
+            "name": "dataDuration",
+            "type": "int",
+            "unit": "hours",
+            "optional": true
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Lowest price",
+            "displayNameEvent": "Lowest price changed",
+            "name": "lowestPrice",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour",
+            "optional": true
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Highest price",
+            "displayNameEvent": "Highest price changed",
+            "name": "highestPrice",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour",
+            "optional": true
         }
     ]
 }
