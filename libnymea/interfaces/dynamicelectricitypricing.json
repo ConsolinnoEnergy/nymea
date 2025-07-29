@@ -20,7 +20,7 @@
             "defaultValue": 0,
             "displayName": "Grid fee series",
             "displayNameEvent": "Grid fee series changed",
-            "name": "gridSeries",
+            "name": "gridFeeSeries",
             "type": "QVariantMap",
             "unit": "EuroCentPerKiloWattHour"
         },
