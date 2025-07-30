@@ -1,50 +1,142 @@
 {
     "states": [
         {
+            "defaultValue": 0,
+            "displayName": "Energy price series",
+            "displayNameEvent": "Energy price series changed",
             "name": "priceSeries",
-            "displayName": "Current price series",
-            "displayNameEvent": "Current price series changed",
             "type": "QVariantMap",
-            "defaultValue": 0
+            "unit": "EuroCentPerKiloWattHour"
         },
         {
-            "name": "validSince",
+            "defaultValue": 0,
+            "displayName": "Levies series",
+            "displayNameEvent": "Levies series changed",
+            "name": "leviesSeries",
+            "type": "QVariantMap",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Grid fee series",
+            "displayNameEvent": "Grid fee series changed",
+            "name": "gridFeeSeries",
+            "type": "QVariantMap",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Total cost series",
+            "displayNameEvent": "Total cost series changed",
+            "name": "totalCostSeries",
+            "type": "QVariantMap",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
             "displayName": "Valid since",
             "displayNameEvent": "Valid since changed",
-            "unit": "UnixTime",
+            "name": "validSince",
             "type": "int",
-            "defaultValue": 0
+            "unit": "UnixTime"
         },
         {
-            "name": "validUntil",
+            "defaultValue": 0,
             "displayName": "Valid until",
             "displayNameEvent": "Valid until changed",
-            "unit": "UnixTime",
+            "name": "validUntil",
             "type": "int",
-            "defaultValue": 0
+            "unit": "UnixTime"
         },
         {
-            "name": "currentSlot",
+            "defaultValue": 0,
             "displayName": "Current time slot",
             "displayNameEvent": "Current time slot changed",
-            "unit": "UnixTime",
+            "name": "currentSlot",
             "type": "int",
-            "defaultValue": 0
+            "unit": "UnixTime"
         },
         {
-            "name": "currentSlotISO",
+            "defaultValue": "",
             "displayName": "Current time slot (ISO)",
             "displayNameEvent": "Current time slot (ISO) changed",
-            "type": "QString",
-            "defaultValue": ""
+            "name": "currentSlotISO",
+            "type": "QString"
         },
         {
-            "name": "currentMarketPrice",
-            "displayName": "Current market price",
-            "displayNameEvent": "Current market price changed",
+            "defaultValue": 0,
+            "displayName": "Current total cost",
+            "displayNameEvent": "Current total cost changed",
+            "name": "currentTotalCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Total cost average deviation",
+            "displayNameEvent": "Average deviation changed",
+            "name": "averageDeviation",
+            "type": "int",
+            "unit": "Percentage"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Average total cost",
+            "displayNameEvent": "Average total cost changed",
+            "name": "averageTotalCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Current energy cost",
+            "displayNameEvent": "Current energy cost changed",
+            "name": "currentEnergyCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Current levies",
+            "displayNameEvent": "Current levies cost changed",
+            "name": "currentLeviesCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Current grid fee",
+            "displayNameEvent": "Current grid fee changed",
+            "name": "currentGridFeeCost",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour"
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Data duration",
+            "displayNameEvent": "Data duration changed",
+            "name": "dataDuration",
+            "type": "int",
+            "unit": "hours",
+            "optional": true
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Lowest price",
+            "displayNameEvent": "Lowest price changed",
+            "name": "lowestPrice",
             "type": "double",
             "unit": "EuroCentPerKiloWattHour",
-            "defaultValue": 0
+            "optional": true
+        },
+        {
+            "defaultValue": 0,
+            "displayName": "Highest price",
+            "displayNameEvent": "Highest price changed",
+            "name": "highestPrice",
+            "type": "double",
+            "unit": "EuroCentPerKiloWattHour",
+            "optional": true
         }
     ]
 }
