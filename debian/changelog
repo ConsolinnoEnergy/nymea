@@ -2,6 +2,7 @@ nymea (1.7.020) jammy; urgency=medium
 
   * Update dynamicelectricitypricig interface:
     - Added states for components of energy price
+    - Fixed unit of dataDuration
 
  -- Luis Reber <l.reber@consolinno.de>  Mon, 28 Jul 2025 16:42:00 +0200
 

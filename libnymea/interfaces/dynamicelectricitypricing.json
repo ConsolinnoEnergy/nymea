@@ -117,7 +117,7 @@
             "displayNameEvent": "Data duration changed",
             "name": "dataDuration",
             "type": "int",
-            "unit": "hours",
+            "unit": "Hours",
             "optional": true
         },
         {
