@@ -2,17 +2,25 @@
     "description": "This interface is used for §14a grid support implementation in Germany",
     "states": [
         {
-            "name": "plimStatus",
-            "type": "QString",
-            "possibleValues": [
-                "unrestricted",
-                "shutoff",
-                "limited"
-            ],
+            "name": "isLpcActive",
+            "type": "bool",
+            "defaultValue": false,
             "logged": true
         },
         {
-            "name": "plim",
+            "name": "lpcValue",
+            "type": "double",
+            "unit": "Watt",
+            "logged": true
+        },
+        {
+            "name": "isLppActive",
+            "type": "bool",
+            "defaultValue": false,
+            "logged": true
+        },
+        {
+            "name": "lppValue",
             "type": "double",
             "unit": "Watt",
             "logged": true
