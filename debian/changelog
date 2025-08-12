@@ -1,3 +1,9 @@
+nymea (1.7.021) jammy; urgency=medium
+
+  * Update gridsupport interface for LPP
+
+ -- Tim Fischer <t.fischer@consolinno.de>  Wed, 08 Aug 2025 11:37:31 +0100
+
 nymea (1.7.020) jammy; urgency=medium
 
   * Update dynamicelectricitypricig interface:
