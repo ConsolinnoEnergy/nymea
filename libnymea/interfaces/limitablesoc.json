@@ -1,0 +1,21 @@
+{
+    "description": "This interface can be used to set the maximum allowed SoC.",
+    "extends": ["energystorage"],
+    "states": [
+        {
+            "name": "activateMaxSoC",
+            "type": "bool",
+            "defaultValue": false,
+            "cached": true,
+            "writable": true
+        },
+        {
+            "name": "setMaxSoC",
+            "type": "uint",
+            "unit": "Percentage",
+            "defaultValue": 100,
+            "writable": true,
+            "cached": true
+        }
+    ]
+}

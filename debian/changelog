@@ -1,3 +1,13 @@
+nymea (1.7.022) jammy; urgency=medium
+
+  * interface improvements
+    - remove smartheatingrod interface
+    - remove batteryVoltage state from battery interface
+    - make optional states mandatory for limitableconsumer interface
+    - limitablebattery interface replaced by limitablesoc
+
+ -- Tim Fischer <t.fischer@consolinno.de>  Wed, 17 Sep 2025 14:37:31 +0100
+
 nymea (1.7.021-1) jammy; urgency=medium
 
   * Update gridsupport interface for LPP

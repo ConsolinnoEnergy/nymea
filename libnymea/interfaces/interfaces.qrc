@@ -101,7 +101,6 @@
         <file>alarm.json</file>
         <file>firesensor.json</file>
         <file>childlock.json</file>
-        <file>smartheatingrod.json</file>
 	    <file>smartwashingmachine.json</file>
 	    <file>smartdryer.json</file>
 	    <file>smartdishwasher.json</file>
@@ -109,12 +108,12 @@
         <file>dynamicelectricitypricing.json</file>
         <file>gridsupport.json</file>
         <file>controllablebattery.json</file>
-        <file>limitablebattery.json</file>
         <file>limitgridexport.json</file>
         <file>epexdatasource.json</file>
         <file>limitableproducer.json</file>
         <file>limitableconsumer.json</file>
         <file>controllableconsumer.json</file>
         <file>heatingrod.json</file>
+        <file>limitablesoc.json</file>
     </qresource>
 </RCC>
