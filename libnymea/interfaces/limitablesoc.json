@@ -1,6 +1,6 @@
 {
-    "description": "This interface can be used to set the maximum allowed SoC.",
-    "extends": ["energystorage"],
+    "description": "This interface can be used to set the maximum allowed SoC. If activateMaxSoc is true, the integration plugin shall limit the SoC to setMaxSoC. If activateMaxSoC changes from true to false, the integration plugin shall restore the previously used SoC limit.",
+    "extends": [],
     "states": [
         {
             "name": "activateMaxSoC",

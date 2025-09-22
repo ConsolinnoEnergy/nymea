@@ -1,5 +1,5 @@
 {
-    "description": "This interface can be used to limit the power of consumers.",
+    "description": "This interface can be used to limit the power of consumers. If activateLpc is true, the integration plugin shall limit the consumer to powerLimitConsumer. If activateLpc changes from true to false, the integration plugin shall restore the previously used power limit of the consumer.",
     "extends": [],
     "states": [
         {

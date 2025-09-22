@@ -1,5 +1,5 @@
 {
-    "description": "This interface can be used to limit the power of producers.",
+    "description": "This interface can be used to limit the power of producers. If activateLpp is true, the integration plugin shall limit the consumer to powerLimitProducer. If activateLpp changes from true to false, the integration plugin shall restore the previously used power limit of the producer.",
     "extends": [],
     "states": [
         {

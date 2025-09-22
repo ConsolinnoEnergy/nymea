@@ -5,6 +5,7 @@ nymea (1.7.022) jammy; urgency=medium
     - remove batteryVoltage state from battery interface
     - make optional states mandatory for limitableconsumer interface
     - limitablebattery interface replaced by limitablesoc
+    - added more detailed interface description
 
  -- Tim Fischer <t.fischer@consolinno.de>  Wed, 17 Sep 2025 14:37:31 +0100
 
