@@ -4,6 +4,8 @@
     "states": [
         {
             "name": "activateMaxSoC",
+            "displayName": "Activate maximum SoC",
+            "displayNameEvent": "Activate maximum SoC changed",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -11,6 +13,8 @@
         },
         {
             "name": "setMaxSoC",
+            "displayName": "Maximum SoC setting",
+            "displayNameEvent": "Maximum SoC setting changed",
             "type": "uint",
             "unit": "Percentage",
             "defaultValue": 100,

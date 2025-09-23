@@ -4,6 +4,8 @@
     "states": [
         {
             "name": "activateLpc",
+            "displayName": "Activate limit power consumption",
+            "displayNameEvent": "Activate limit power consumption changed",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -11,16 +13,20 @@
         },
         {
             "name": "powerLimitConsumer",
+            "displayName": "Power limit consumer",
+            "displayNameEvent": "Power limit consumer changed",
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,
             "minValue": 0,
+            "maxValue": "any",
             "cached": true,
             "writable": true
         },
         {
             "name": "controllableLocalSystem",
-            "displayName": "controllable local system (CLS)",
+            "displayName": "Controllable local system (CLS)",
+            "displayNameEvent": "Controllable local system (CLS) changed",
             "type": "bool",
             "defaultValue": false,
             "cached": true,

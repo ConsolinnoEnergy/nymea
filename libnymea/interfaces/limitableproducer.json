@@ -4,6 +4,8 @@
     "states": [
         {
             "name": "activateLpp",
+            "displayName": "Activate limit power production",
+            "displayNameEvent": "Activate limit power production changed",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -11,10 +13,13 @@
         },
         {
             "name": "powerLimitProducer",
+            "displayName": "Power limit producer",
+            "displayNameEvent": "Power limit producer changed",
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,
             "minValue": 0,
+            "maxValue": "any",
             "cached": true,
             "writable": true
         }
