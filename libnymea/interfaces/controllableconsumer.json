@@ -5,7 +5,7 @@
         {
             "name": "activateControlConsumer",
             "displayName": "Activate power control consumer",
-            "displayNameEvent": "Activate power control consumer changed",
+            "displayNameAction": "Set activation power control consumer",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -14,7 +14,7 @@
         {
             "name": "powerSetpointConsumer",
             "displayName": "Power setpoint consumer",
-            "displayNameEvent": "Power setpoint consumer changed",
+            "displayNameAction": "Set Power setpoint consumer",
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,

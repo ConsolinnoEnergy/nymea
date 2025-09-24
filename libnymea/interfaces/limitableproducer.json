@@ -5,7 +5,7 @@
         {
             "name": "activateLpp",
             "displayName": "Activate limit power production",
-            "displayNameEvent": "Activate limit power production changed",
+            "displayNameAction": "Set activation limit power production",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -14,7 +14,7 @@
         {
             "name": "powerLimitProducer",
             "displayName": "Power limit producer",
-            "displayNameEvent": "Power limit producer changed",
+            "displayNameAction": "Set power limit producer",
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,

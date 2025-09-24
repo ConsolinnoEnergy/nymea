@@ -5,7 +5,7 @@
         {
             "name": "activateMaxSoC",
             "displayName": "Activate maximum SoC",
-            "displayNameEvent": "Activate maximum SoC changed",
+            "displayNameAction": "Set activation maximum SoC",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -14,7 +14,7 @@
         {
             "name": "setMaxSoC",
             "displayName": "Maximum SoC setting",
-            "displayNameEvent": "Maximum SoC setting changed",
+            "displayNameAction": "Set maximum SoC setting",
             "type": "uint",
             "unit": "Percentage",
             "defaultValue": 100,
