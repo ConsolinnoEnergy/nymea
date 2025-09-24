@@ -1,5 +1,5 @@
 {
-    "description": "This interface is used for setting grid export limit",
+    "description": "This interface is used for setting grid export limit. If enableExportLimit is true, the integration plugin shall limit the grid export to exportLimit. If enableExportLimit changes from true to false, the integration plugin shall restore the previously used export limit.",
     "states": [
         {
             "name": "enableExportLimit",

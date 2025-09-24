@@ -1,9 +1,11 @@
 {
-    "description": "This interface can be used to limit the power of consumers.",
+    "description": "This interface can be used to limit the power of consumers. If activateLpc is true, the integration plugin shall limit the consumer to powerLimitConsumer. If activateLpc changes from true to false, the integration plugin shall restore the previously used power limit of the consumer. The controllableLocalSystem state specifies whether the device is classified as a Controllable Local System (CLS) according to §14a EnWG.",
     "extends": [],
     "states": [
         {
             "name": "activateLpc",
+            "displayName": "Activate limit power consumption",
+            "displayNameAction": "Set activation limit power consumption",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -11,22 +13,24 @@
         },
         {
             "name": "powerLimitConsumer",
+            "displayName": "Power limit consumer",
+            "displayNameAction": "Set power limit consumer",
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,
             "minValue": 0,
+            "maxValue": "any",
             "cached": true,
-            "writable": true,
-            "optional": true
+            "writable": true
         },
         {
             "name": "controllableLocalSystem",
-            "displayName": "controllable local system (CLS)",
+            "displayName": "Controllable local system (CLS)",
+            "displayNameAction": "Set controllable local system (CLS)",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
-            "writable": true,
-            "optional": true
+            "writable": true
         }
     ]
 }

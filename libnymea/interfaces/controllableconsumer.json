@@ -4,6 +4,8 @@
     "states": [
         {
             "name": "activateControlConsumer",
+            "displayName": "Activate power control consumer",
+            "displayNameAction": "Set activation power control consumer",
             "type": "bool",
             "defaultValue": false,
             "cached": true,
@@ -11,10 +13,13 @@
         },
         {
             "name": "powerSetpointConsumer",
+            "displayName": "Power setpoint consumer",
+            "displayNameAction": "Set Power setpoint consumer",
             "type": "double",
             "unit": "Watt",
             "defaultValue": 0,
             "minValue": 0,
+            "maxValue": "any",
             "cached": true,
             "writable": true
         }
