@@ -25,8 +25,7 @@
             "name": "phaseCount",
             "type": "uint",
             "minValue": 0,
-            "maxValue": 3,
-            "optional": true
+            "maxValue": 3
         },
         {
             "name": "sessionEnergy",

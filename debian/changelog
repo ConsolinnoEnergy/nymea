@@ -7,7 +7,8 @@ nymea (1.7.022) jammy; urgency=medium
     - limitablebattery interface replaced by limitablesoc
     - added more detailed interface description
     - update heatingrod interface
-  * smartgridheatpump: Add standard as state
+    - evcharger: mandatory phaseCount state
+    - smartgridheatpump: Add standard as state
 
  -- Tim Fischer <t.fischer@consolinno.de>  Wed, 17 Sep 2025 14:37:31 +0100
 
