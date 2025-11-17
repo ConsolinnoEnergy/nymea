@@ -7,19 +7,19 @@
             "type": "uint",
             "writable": true,
             "unit": "Ampere",
-            "minValue": "any",
+            "minValue": 6,
             "maxValue": "any"
         },
         {
             "name": "pluggedIn",
             "type": "bool",
-            "optional": true
+            "defaultValue": false
         },
         {
             "name": "charging",
             "type": "bool",
             "logged": true,
-            "optional": true
+            "defaultValue": false
         },
         {
             "name": "phaseCount",
