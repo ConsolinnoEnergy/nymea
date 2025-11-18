@@ -3,7 +3,7 @@ nymea (1.7.023) jammy; urgency=medium
   * interface improvements
     - evcharger: charging non-optional
                  pluggedIn non-optional
-                 minChargingCurrent set to 6
+                 maxChargingCurrent minValue set to 6
 
  -- Tim Fischer <t.fischer@consolinno.de>  Wed, 17 Sep 2025 14:37:31 +0100
 
